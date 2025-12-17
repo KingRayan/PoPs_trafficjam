@@ -12,6 +12,18 @@ typedef struct {
 	int y;
 }Point;
 
+/* Fonction qui echange deux entiers en passage par pointeurs
+ * @input : (int) x, (int) y
+ * @return : NONE */
+void swap(int *X, int *Y)
+{
+        int temp = *X; //save X
+        *X = *Y; //cp Y in X
+        *Y = temp; //cp saved X in Y
+}
+
+
+
 /* Fonction affichant un plateau vide
  * @input : (int) Longueur souhaitée
  * @return : affichage */
@@ -50,40 +62,36 @@ void generategrid(int gridl)
 	}
 	allerxy(pbl.x, pbl.y);
 	printf("+%.*s+", gridl, "==============================");
-	if (recupcar() == 'q') resetterminal(); // reset si l'utilisateur appuie sur q (énoncé) 
-	
-
+	if (recupcar() == 'q') resetterminal(); // reset si l'utilisateur appuie sur q (énoncé)
 }
 
 /* Fonction affichant un véhicule rouge
- * @input : (Point) {x,y} TopLeft de la voiture
- * 	    (int) horizontal(none) or Vertical(any) -hv
+ * @input : (Point) Rc{x,y} TopLeft de la voiture
+ * 	    (int) hv horizontal(none) or Vertical(any) 
  * @return : affichage */
 
 void generatemainCar(Point Rc, int hv)
 {
-	int *carlength = 9;
-	int *carheight = 6;
-	int temp;
+	int carlength = 9;
+	int carheight = 6;
+	
 	if(hv) {
-		temp = *carlength;
-		*carlength = *carheight;
-		*carheight = *carlength;
+		swap(&carlength, &carheight);
 	}
 
 	couleurpolice(12);
 	allerxy(Rc.x, Rc.y);
-	 for(int i = 0; i < carheight; i++){
+	for(int i = 0; i < carheight; i++){
 			allerxy(Rc.x, Rc.y + i);
-			printf("%.s", carlength,  "***********");
-
-	 }
+			printf("%.*s", carlength, "**************");			
+	}
+	if (recupcar() == 'q') resetterminal(); // reset si l'utilisateur appuie sur q (énoncé)
 	
 }
 
 int main(void)
 {
-	Point A = {34,18};
+	Point start = {32, 15};
 	generategrid(18);
-	generatemainCar(A);
+	generatemainCar(start, 0);
 }
