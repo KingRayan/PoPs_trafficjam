@@ -72,8 +72,8 @@ void generatemainCar(Point Rc, int hv)
 	}
 
 	couleurpolice(12);
-	allerxy(Rc.x, Rx.y);
-	 for(int i = 0; i < carheight(); i++){
+	allerxy(Rc.x, Rc.y);
+	 for(int i = 0; i < carheight; i++){
 			allerxy(Rc.x, Rc.y + i);
 			printf("%.s", carlength,  "***********");
 
@@ -83,6 +83,7 @@ void generatemainCar(Point Rc, int hv)
 
 int main(void)
 {
+	Point A = {34,18};
 	generategrid(18);
-	generatemainCar(
+	generatemainCar(A);
 }
