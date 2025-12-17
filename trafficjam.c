@@ -6,7 +6,6 @@
 #define MAX_LENGTH 80
 #define MAX_HEIGHT 45
 
-
 typedef struct {
 	int x;
 	int y;
@@ -29,8 +28,8 @@ void swap(int *X, int *Y)
  * @return : affichage */
 void generategrid(int gridl)
 {
-	/* Attente de l'utilisateur */
-	attendre(); // ne rien afficher sans choix de l'utilisateur par appui sur entree
+	/* Clear View */
+	resetterminal();
 	flushstdin();
 	desactive_curseur();
 	
@@ -44,6 +43,7 @@ void generategrid(int gridl)
 	Point pbl = {31, 31}; //BottomLeft
 	Point pbr = {50, 31}; //BottomRight
 
+	
 
 	efface_ligne();
 	allerxy(ptl.x, ptl.y);   	
@@ -67,7 +67,7 @@ void generategrid(int gridl)
 
 /* Fonction affichant un véhicule rouge
  * @input : (Point) Rc{x,y} TopLeft de la voiture
- * 	    (int) hv horizontal(none) or Vertical(any) 
+ * 	    (int) hv horizontal(0) or Vertical(1) 
  * @return : affichage */
 
 void generatemainCar(Point Rc, int hv)
@@ -78,8 +78,9 @@ void generatemainCar(Point Rc, int hv)
 	if(hv) {
 		swap(&carlength, &carheight);
 	}
-
-	couleurpolice(12);
+	
+	couleurfond(30);
+	couleurpolice(31); // 30 Black, 31 Red, 32 Green, 33 Yellow, 34 Blue, 35 Magenta, 36 Cyan, 37 White
 	allerxy(Rc.x, Rc.y);
 	for(int i = 0; i < carheight; i++){
 			allerxy(Rc.x, Rc.y + i);
