@@ -62,7 +62,7 @@ void generategrid(int gridl)
 	}
 	allerxy(pbl.x, pbl.y);
 	printf("+%.*s+", gridl, "==============================");
-	if (recupcar() == 'q') resetterminal(); // reset si l'utilisateur appuie sur q (énoncé)
+	//if (recupcar() == 'q') resetterminal(); // reset si l'utilisateur appuie sur q (énoncé)
 }
 
 /* Fonction affichant un véhicule rouge
@@ -79,12 +79,12 @@ void generatemainCar(Point Rc, int hv)
 		swap(&carlength, &carheight);
 	}
 	
-	couleurfond(30);
-	couleurpolice(31); // 30 Black, 31 Red, 32 Green, 33 Yellow, 34 Blue, 35 Magenta, 36 Cyan, 37 White
+	couleurfond(31);
+	//couleurpolice(31); // 30 Black, 31 Red, 32 Green, 33 Yellow, 34 Blue, 35 Magenta, 36 Cyan, 37 White
 	allerxy(Rc.x, Rc.y);
 	for(int i = 0; i < carheight; i++){
 			allerxy(Rc.x, Rc.y + i);
-			printf("%.*s", carlength, "**************");			
+			printf("%.*s", carlength, "                     ");			
 	}
 	if (recupcar() == 'q') resetterminal(); // reset si l'utilisateur appuie sur q (énoncé)
 	
@@ -95,4 +95,5 @@ int main(void)
 	Point start = {32, 15};
 	generategrid(18);
 	generatemainCar(start, 0);
+	
 }

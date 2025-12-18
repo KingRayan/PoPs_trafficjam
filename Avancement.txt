@@ -4,12 +4,14 @@ Bonjour,
 
 Etape 0 : (11/12/2025) (~0h5min)
 	- Vérifier le bon fonctionnement de la bibliothèque console.h en compilant et testant le programme test.c;
+	
 	++ bibliothèque testée, utilisation des fonctions *d'echo*, *couleur pour la police et le background*  ainsi que la possibilité de *renommer le terminal* et l'*effacer*. (utile pour notre jeu).
 
 Etape 1 : (11/12/2025) (~1h30min)
 	- Affichage du plateau vide.
 	fonction :  generategrid(gridl, gridh) 02 entiers égaux? autant utiliser un seul paramètre.
 	|-> augmenter gridl dans les niveaux plus durs? (idée)
+	
 	++ test1 effectué, simple génération de grille à l'aide d'une for loop.
 	   questionnement, si ce ne serait pas plus judicieux pour la suite de passer directement par un tableau 2D.
 	
@@ -25,4 +27,18 @@ i
 	FINAL.
 
 Etape 2 : (11/12/2025) (En cours)
+	- Affichage de la voiture rouge dans le plateau
+	fonction : generateMainCar(Point, hv) un point et un entier (horizontale si 0, vertical si 1) Bien mais int > char en espace mémoire donc directement utiliser H, V en char.
+	fonction : generateMainCar(Point, hv) un point et un char ('H'/'V')
+	|-> rajouter des inputs pour généraliser la fonction à toutes les voitures. (i.e : couleur, car_id)
+	
+	++ test1 effectué, j'ai pu afficher une voiture sous forme de "*" rouges à l'intérieur de ma grille de jeu. Mais je trouve les "*" pas très visibles. J'essaye de faire afficher un rectangle complet. 
+	
+	++ test2, après avoir initié le caractère à afficher " " et le background_color à rouge. j'obtiens bien un rectangle rouge. C'est déja mieux pour la visualisation. 
+	Je réfléchis sérieusement à la capacité d'intégrer d'autres variables afin de généraliser cette fonction à toutes les voitures
+
+	|-> reflechir à la suite, initier un tableau 2D représentant mes cases de jeu, avec les id de voitures remplis dedans. (tab uint8) ? 
+	|-> utiliser un tab de pointeurs par la suite pour (manipuler la mémoire) //  éviter les collisions entre voitures ?
+	|-> définir directement struct Vehicule{Point, tailler, direction} ? 
+
 
