@@ -70,18 +70,18 @@ void generategrid(int gridl)
  * 	    (int) hv horizontal(0) or Vertical(1) 
  * @return : affichage */
 
-void generatemainCar(Point Rc, int hv)
+void generatemainCar(Point Rc, char direction, int color)
 {
-	int carlength = 9;
-	int carheight = 6;
+	int carlength = 6;
+	int carheight = 3;
 	
-	if(hv) {
+	if(direction != 'h') {
 		swap(&carlength, &carheight);
 	}
 	
-	couleurfond(31);
+	couleurfond(color);
 	//couleurpolice(31); // 30 Black, 31 Red, 32 Green, 33 Yellow, 34 Blue, 35 Magenta, 36 Cyan, 37 White
-	allerxy(Rc.x, Rc.y);
+	// allerxy(Rc.x, Rc.y);
 	for(int i = 0; i < carheight; i++){
 			allerxy(Rc.x, Rc.y + i);
 			printf("%.*s", carlength, "                     ");			
@@ -93,7 +93,11 @@ void generatemainCar(Point Rc, int hv)
 int main(void)
 {
 	Point start = {32, 15};
-	generategrid(18);
-	generatemainCar(start, 0);
+	Point p2 = {40, 15};
+        generategrid(18);
+	generatemainCar(start, 'h', 31);
+	generatemainCar(p2, 'v', 32);
+	generatemainCar(zero, 'h', 33);
 	
+	generatemainCar(end, 'h', 35);
 }
