@@ -2,12 +2,12 @@ Bonjour,
 	Bienvenue dans le fichier d'avancement du projet "traffic jam".
 	Ce dernier, est structuré par étapes du projet.
 
-Etape 0 : (11/12/2025) (~0h5min)
+Etape 0 : (11/12/2025) 
 	- Vérifier le bon fonctionnement de la bibliothèque console.h en compilant et testant le programme test.c;
 	
 	++ bibliothèque testée, utilisation des fonctions *d'echo*, *couleur pour la police et le background*  ainsi que la possibilité de *renommer le terminal* et l'*effacer*. (utile pour notre jeu).
 
-Etape 1 : (11/12/2025) (~1h30min)
+Etape 1 : (11/12/2025) 
 	- Affichage du plateau vide.
 	fonction :  generategrid(gridl, gridh) 02 entiers égaux? autant utiliser un seul paramètre.
 	|-> augmenter gridl dans les niveaux plus durs? (idée)
@@ -26,7 +26,7 @@ i
 	
 	FINAL.
 
-Etape 2 : (11/12/2025) (En cours)
+Etape 2 :
 	- Affichage de la voiture rouge dans le plateau
 	fonction : generateMainCar(Point, hv) un point et un entier (horizontale si 0, vertical si 1) Bien mais int > char en espace mémoire donc directement utiliser H, V en char.
 	fonction : generateMainCar(Point, hv) un point et un char ('H'/'V')
@@ -41,4 +41,9 @@ Etape 2 : (11/12/2025) (En cours)
 	|-> utiliser un tab de pointeurs par la suite pour (manipuler la mémoire) //  éviter les collisions entre voitures ?
 	|-> définir directement struct Vehicule{Point, tailler, direction} ? 
 
+Etape 3 : 
+	- Faire bouger une voiture. Pas très compliqué en display uniquement. 
+	|-> Trouver la logique pour faire bouger les voitures (en interne // sans display) i.e tableaux, pointeurs etc...
+	++ Separer Logique et Display dans notre jeu (faciliter le game design)
+	|-> Surtout pour detecter les collisions, sinon on aura chevauchement de voitures en display voire carrément voitures sortant de la grille.
 
