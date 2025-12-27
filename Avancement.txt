@@ -47,3 +47,23 @@ Etape 3 :
 	++ Separer Logique et Display dans notre jeu (faciliter le game design)
 	|-> Surtout pour detecter les collisions, sinon on aura chevauchement de voitures en display voire carrément voitures sortant de la grille.
 
+Etapes suivantes:
+
+Maintenant que je comprends mieux comment la sortie est visualisée, il est impératif de différencier la logique du jeu (tableaux et pointeurs) de la visualisation de cette dernière(ce qu'on a fait jusqu'à présent) 
+
+Il faut à présent réfléchir à une meilleure façon de mettre en logique notre jeu. Evitant les collisions/chevauchements entre voitures et les sorties de piste.
+
+::RESTRUCTURATION DE CODE::
+une structure englobant l'ensemble des vehicules, qui appelle une autre structure qui définit les véhicules présents (taille, couleur, position, direction...etc).
+
+Petit test sur les tailles en mémoire : j'obtiens
+sizeof(Vehicule)  = 24 bytes 
+{05 entiers et un char -- 5*4 + 1 -- or j'ai padding sur le char}
+sizeof(Game)= 248 bytes 
+{n vehicules + 02 entiers -- 24 * MAX_VEHICULES + 8}
+
+Je ne sais pas si en deplaçant le char à la fin j'obtiendrais 21 bytes pour vehicule
+|-> Voir possibles optimisations de memory allocation, mais pour l'instant compte tenu du cahier des charges non limité. On passe à la suite :
+
+::LOGIQUE DE LA GRILLE::
+
