@@ -7,7 +7,7 @@ Etape 0 : (11/12/2025)
 	
 	++ bibliothèque testée, utilisation des fonctions *d'echo*, *couleur pour la police et le background*  ainsi que la possibilité de *renommer le terminal* et l'*effacer*. (utile pour notre jeu).
 
-Etape 1 : (11/12/2025) 
+=== Etape 1 : (11/12/2025) 
 	- Affichage du plateau vide.
 	fonction :  generategrid(gridl, gridh) 02 entiers égaux? autant utiliser un seul paramètre.
 	|-> augmenter gridl dans les niveaux plus durs? (idée)
@@ -26,7 +26,7 @@ i
 	
 	FINAL.
 
-Etape 2 :
+=== Etape 2 : (11/12/2025) au (12/12/2025)
 	- Affichage de la voiture rouge dans le plateau
 	fonction : generateMainCar(Point, hv) un point et un entier (horizontale si 0, vertical si 1) Bien mais int > char en espace mémoire donc directement utiliser H, V en char.
 	fonction : generateMainCar(Point, hv) un point et un char ('H'/'V')
@@ -41,20 +41,21 @@ Etape 2 :
 	|-> utiliser un tab de pointeurs par la suite pour (manipuler la mémoire) //  éviter les collisions entre voitures ?
 	|-> définir directement struct Vehicule{Point, tailler, direction} ? 
 
-Etape 3 : 
+=== Etape 3 : (12/12/2025) au (17/12/2025)
 	- Faire bouger une voiture. Pas très compliqué en display uniquement. 
 	|-> Trouver la logique pour faire bouger les voitures (en interne // sans display) i.e tableaux, pointeurs etc...
 	++ Separer Logique et Display dans notre jeu (faciliter le game design)
 	|-> Surtout pour detecter les collisions, sinon on aura chevauchement de voitures en display voire carrément voitures sortant de la grille.
 
-Etapes suivantes:
+====::Etapes suivantes::====
 
 Maintenant que je comprends mieux comment la sortie est visualisée, il est impératif de différencier la logique du jeu (tableaux et pointeurs) de la visualisation de cette dernière(ce qu'on a fait jusqu'à présent) 
 
 Il faut à présent réfléchir à une meilleure façon de mettre en logique notre jeu. Evitant les collisions/chevauchements entre voitures et les sorties de piste.
 
-::RESTRUCTURATION DE CODE::
-une structure englobant l'ensemble des vehicules, qui appelle une autre structure qui définit les véhicules présents (taille, couleur, position, direction...etc).
+
+====::RESTRUCTURATION DE CODE::==== (26/12/2025) au (27/12/2025)
+Une structure englobant l'ensemble des vehicules, qui appelle une autre structure qui définit les véhicules présents (taille, couleur, position, direction...etc).
 
 Petit test sur les tailles en mémoire : j'obtiens
 sizeof(Vehicule)  = 24 bytes 
@@ -62,8 +63,44 @@ sizeof(Vehicule)  = 24 bytes
 sizeof(Game)= 248 bytes 
 {n vehicules + 02 entiers -- 24 * MAX_VEHICULES + 8}
 
-Je ne sais pas si en deplaçant le char à la fin j'obtiendrais 21 bytes pour vehicule
+Pareil en deplaçant le char à la fin <=> padding dépendant du max_bytes des éléments de ma struct.
+
 |-> Voir possibles optimisations de memory allocation, mais pour l'instant compte tenu du cahier des charges non limité. On passe à la suite :
 
-::LOGIQUE DE LA GRILLE::
 
+====::LOGIQUE DE LA GRILLE::====
+Une unique fonction build_grid() suffit. Je propose de mettre en paramètres un tableau 2dimensions représentant notre grille. ([GRID_SIZE][GRID_SIZE]), ainsi qu'un pointeur structure Game (Game *s) qui nous sera utile pour accéder et modifier la struct originale sans pour autant copier tous les éléments. 
+
+On a également besoin de variables pour pouvoir accéder aux données (points de la grille, points d'une voiture)
+Donc itérer sur chaque point d'une voiture (id les voitures), itérer sur les voitures (indexées), itérer sur les points de la grille (empty ou filled).
+
+Commençons par initialiser notre grille à -1, (-1) indique que l'espace est vide. toutes les autres valeurs (non-négatives) indiquent donc présence d'une voiture (son id)
+
+|-> Grille vide initialisée, Ajouter des véhicules maintenant.
+faire un pointeur sur véhicules. Permet d'accéder à chaque véhicule sans passer par l'ensemble des éléments du tableau-struct Cars. (le pointeur pointe sur le véhicule actuel)
+
+++ Ne pas oublier mise à l'echelle des voitures. Si on prend facteur multiplicatif Zoom, pour passer d'une grill 6x6 (que je juge trop petite), à 18x18, il faudra aussi modifier la visualisation sur la grille. 
+Cela dépend de la direction de chaque véhicule. i.e:
+[**] devient [***][***]
+	     [***][***]
+	     [***][***]
+
+Si horizontal : longueur multipliée par facteur
+Si vertical : hauteur multipliée par facteur
+
+|-> Mise a l'echelle effectuée
+Maintenant associer chaque position sur la grille à l'id de la voiture.
+donc double loop avec incrementation x+dx, y+dy 
+
+
+====::RENDERING::==== (27/12/2025) au (28/12/2025)
+Simple modification de la draw_grid afin qu'elle soit void, indiquer GRID_SIZE sur les define.
+J'ai compris que les codes couleurs ne sont autres que ceux de l'ANSI (AMERICAN NATIONAL STANDARDS INSTITUTE) donc j'ai ajouté les codes usuels à mes define. 
+
+Tracer les véhicules grace a draw_car(Vehicule *v)
+pointe sur le vehicule actuel, va a la position top-left de chaque véhicule et modifie la culeur de fond sur chaque point du véhicule. 
+
+Test n°1, °2 n'ont pas abouti car mauvais positionnement. --> Passer par des variables pour éviter de s'emmeler les pinceaux. Car on se perd très vite.
+Au 3e test, j'arrive enfin à bien visualiser mon tableau 2D composé de 4 véhicules et des espaces vides sur le terminal, avec les couleurs bien positionnées dans ma grille. 
+
+|-> Le plus dur est fait. Tests de demain :=> modifier le tableau et visualiser sur le terminal (principe du mouvement des véhicules). 
