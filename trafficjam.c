@@ -12,18 +12,9 @@
 #define GRID_ORIGIN_X 32
 #define GRID_ORIGIN_Y 15
 
-/* COULEURS DE TEXTE (VEHICULES) */
-#define COLOR_BLACK 30
-#define COLOR_RED 31
-#define COLOR_GREEN 32
-#define COLOR_YELLOW 33
-#define COLOR_BLUE 34
-#define COLOR_PURPLE 35
-#define COLOR_CYAN 36
-#define COLOR_WHITE 37
 
 typedef struct {
-	int id; 		// référencer les véhicules de la grille
+	int id; 		// referencer les vehicules de la grille
 	int x, y; 		// top-left point vehicule
 	char dir; 		// 'h'(horizontal) or 'v' (vertical)
 	int length; 		// 2(car) or 3(truck)
@@ -37,7 +28,7 @@ typedef struct{
 	int selected;				// id vehicule selected
 }Game;
 
-/* =================== LOGIQUE ====================== */
+/* =================== BASE DU JEU ====================== */
 
 void build_grid(int grid[GRID_SIZE][GRID_SIZE], Game *s)
 {
@@ -60,11 +51,26 @@ void build_grid(int grid[GRID_SIZE][GRID_SIZE], Game *s)
 		
 		for(dy = 0; dy < hei; dy++)
 			for(dx = 0; dx < len; dx++)
-				grid[v->y + dy][v->x + dx] = v->id; // associer les grilles occupées aux véhicules distincts
-	
+				grid[v->y + dy][v->x + dx] = v->id; // associer les cellules occupées aux véhicules distincts	
 	}
 
 }
+
+/* ================== INIT ======================== */
+Game init_game(void)
+{
+	Game s;
+	s.count = 4;
+	s.selected = 0;
+
+	s.Cars[0] = (Vehicule){0, 3, 6, 'h', 2, 31};
+	s.Cars[1] = (Vehicule){1, 0, 0, 'v', 3, 32};
+	s.Cars[2] = (Vehicule){2, 9, 0, 'v', 3, 34};
+	s.Cars[3] = (Vehicule){3, 12, 6, 'v', 2, 35};
+	
+	return s;
+}
+
 
 /* ================== RENDERING ======================== */
 
@@ -84,59 +90,144 @@ void draw_grid(void)
     	printf("+==================+");
 }
 
-void draw_car(Vehicule *v) {
-    int x, y;
+void draw_car(Vehicule *v) 
+{
+	int x, y;
 
-    /* SCALE THE POSITION */
-    int sx = GRID_ORIGIN_X + v->x;
-    int sy = GRID_ORIGIN_Y + v->y;
+    	/* SCALE THE POSITION */
+    	int sx = GRID_ORIGIN_X + v->x;
+    	int sy = GRID_ORIGIN_Y + v->y;
 
-    int len = (v->dir == 'h') ? v->length * CELL : CELL;
-    int hei = (v->dir == 'v') ? v->length * CELL : CELL;
+    	int len = (v->dir == 'h') ? v->length * CELL : CELL;
+    	int hei = (v->dir == 'v') ? v->length * CELL : CELL;
 
-    couleurfond(v->color);
+    	couleurfond(v->color);
 
-    for (y = 0; y < hei; y++) {
-        allerxy(sx, sy + y);
-        for (x = 0; x < len; x++)
-            printf(" ");
-    }
+    	for (y = 0; y < hei; y++) 
+	{
+        	allerxy(sx, sy + y);
+        	for (x = 0; x < len; x++)
+            		printf(" ");
+    	}
 
-    resetcouleurs();
+    	resetcouleurs();
+}
+
+void render(Game *s)
+{
+	int i;
+	
+	efface_ecran();
+	draw_grid();
+
+	for (i = 0; i < s->count; i++)
+		draw_car(&s->Cars[i]);
+	
+	allerxy(1, 1);
+    	printf("Selected car: %d  ", s->selected);
+
+    	allerxy(1, 2);
+    	printf("Orientation: %s      ", s->Cars[s->selected].dir == 'h'? "HORIZONTAL" : "VERTICAL");
+
+
+    	allerxy(1, 5);
+    	printf("Arrows: selection || ('h'/'j'/'k'/'l'): movement || 'q' / CRTL + C: quit");
+}
+
+int read_key(void) {
+	int c = recupcar();
+    	if (c == 27) 
+	{
+        	if (recupcar() == '[')
+            		return recupcar();  
+	}
+    	return c;
 }
 
 
+
+
+/* =============== MOVEMENT =================== */
+int can_move(Game *s, int id, int dx, int dy) {
+    	int grid[GRID_SIZE][GRID_SIZE];
+    	int x, y;
+
+    	build_grid(grid, s);
+
+    	Vehicule *v = &s->Cars[id];
+
+    	if (v->dir == 'h' && dy != 0) return 0;
+    	if (v->dir == 'v' && dx != 0) return 0;
+
+    	int nx = v->x + dx;
+   	int ny = v->y + dy;
+
+    	int w = (v->dir == 'h') ? v->length * CELL : CELL;
+    	int h = (v->dir == 'v') ? v->length * CELL : CELL;
+
+    	if (nx < 0 || ny < 0 ||
+        	nx + w > GRID_SIZE || ny + h > GRID_SIZE)
+        	return 0;
+
+    	for (y = 0; y < h; y++)
+        	for (x = 0; x < w; x++) {
+            	int g = grid[ny + y][nx + x];
+            	if (g != -1 && g != id)
+                	return 0;
+        	}
+
+	    return 1;
+}
+
+void move_vehicule(Game *s, int id, int dx, int dy)
+{
+	if(can_move(s, id, dx, dy))
+	{
+		s->Cars[id].x += dx;
+		s->Cars[id].y += dy;
+	}
+}
 
 
 
 int main(void)
 {
-    nostdoutbuff();
-    desactive_curseur();
-    efface_ecran();
+	nostdoutbuff();
+	desactive_curseur();
 
-    draw_grid();
+    	Game game = init_game();
 
-    Vehicule cars[] = {
-        {0,  0,  0, 'v', 3, COLOR_GREEN},  // left vertical
-        {1,  3,  6, 'h', 2, COLOR_RED},  // middle horizontal
-        {2,  9,  0, 'v', 3, COLOR_BLUE},  // right vertical
-        {3, 12,  6, 'h', 2, COLOR_CYAN},  // bottom horizontal
-    };
+   	while (1) 
+    	{
+        	render(&game);
+		int key = read_key();
 
-    int n = sizeof(cars) / sizeof(cars[0]);
-    for (int i = 0; i < n; i++)
-        draw_car(&cars[i]);
+        	allerxy(1, 7);
+        	printf("TEST n°6 : Affichage et mouvement");
+        
+		if(key == 'q') break;
+	
+		if(key == 'A')
+			game.selected = (game.selected - 1 + game.count) % game.count;
+	
+		else if (key == 'B')
+            		game.selected = (game.selected + 1) % game.count;
 
-    allerxy(1, 1);
-    printf("Rendering test n°3 — press Ctrl+C to quit");
+        	else if (key == 'h')
+            		move_vehicule(&game, game.selected, -CELL, 0);
 
-    int c;
-    do{
-	c = getchar();
-      } while (c != 'q');
+        	else if (key == 'l')
+            		move_vehicule(&game, game.selected, CELL, 0);
 
-    resetterminal();
-    active_curseur();
-    return 0;
+        	else if (key == 'k')
+            		move_vehicule(&game, game.selected, 0, -CELL);
+
+        	else if (key == 'j')
+            		move_vehicule(&game, game.selected, 0, CELL);
+      	}
+
+    	resetterminal();
+    	active_curseur();
+	return 0;
 }
+

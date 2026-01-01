@@ -103,4 +103,18 @@ pointe sur le vehicule actuel, va a la position top-left de chaque véhicule et 
 Test n°1, °2 n'ont pas abouti car mauvais positionnement. --> Passer par des variables pour éviter de s'emmeler les pinceaux. Car on se perd très vite.
 Au 3e test, j'arrive enfin à bien visualiser mon tableau 2D composé de 4 véhicules et des espaces vides sur le terminal, avec les couleurs bien positionnées dans ma grille. 
 
-|-> Le plus dur est fait. Tests de demain :=> modifier le tableau et visualiser sur le terminal (principe du mouvement des véhicules). 
+|-> Le plus dur est fait. Tests de demain :=> modifier le tableau et visualiser sur le terminal (principe du mouvement des véhicules).
+
+
+On passe maintenant au mouvement d'un véhicule. La logique est simple, dans notre grille 2D : On séléctionne un véhicule et en fonction de sa direction, on le fait bouger. Vertical/Horizontal --> on ajoute un membre {dy}, {dx} à sa position initiale (accessible depuis la structure de jeu Game, passée en pointeur pour ne pas copier tout etuniquement modifier ce dont on a besoin).
+move_vehicule(Game *s, int id, int dx, int dy)	
+		s->vehicles[id].x += dx; 
+		s->vehicles[id].y += dy;
+
+|-> Ajouter les contraintes sur la direction, car ma fonction actuelle laisse un véhicule horizontal bouger en verticale.
+|-> Ajouter les contraintes sur la sortie de grille des véhicules et le chevauchement entre véhicules. 
+
+Donc réfléchir à une fonction qui dit si le movement d'un véhicule est legal?
+Definition d'une fonction secondaire à call dans la fonction de mouvement. 
+can_move(Game *s, int id, int dx, int dy)
+qui traite les contraintes citées auparavant.
