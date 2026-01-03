@@ -55,33 +55,54 @@ Il faut à présent réfléchir à une meilleure façon de mettre en logique not
 
 
 ====::RESTRUCTURATION DE CODE::==== (26/12/2025) au (27/12/2025)
+
 Une structure englobant l'ensemble des vehicules, qui appelle une autre structure qui définit les véhicules présents (taille, couleur, position, direction...etc).
 
-Petit test sur les tailles en mémoire : j'obtiens
+Petit test sur les tailles en mémoire. 
+J'obtiens :
+
 sizeof(Vehicule)  = 24 bytes 
-{05 entiers et un char -- 5*4 + 1 -- or j'ai padding sur le char}
+				{05 entiers et un char -- 5*4 + 1 -- or j'ai padding sur le char}
 sizeof(Game)= 248 bytes 
-{n vehicules + 02 entiers -- 24 * MAX_VEHICULES + 8}
+				{n vehicules + 02 entiers -- 24 * MAX_VEHICULES + 8}
 
 Pareil en deplaçant le char à la fin <=> padding dépendant du max_bytes des éléments de ma struct.
 
-|-> Voir possibles optimisations de memory allocation, mais pour l'instant compte tenu du cahier des charges non limité. On passe à la suite :
+|-> Voir possibles optimisations de memory allocation (si jeu sur un sys embarqué {Pi 5...etc}, mais pour l'instant compte tenu du cahier des charges non limité. On passe àla suite :
 
 
 ====::LOGIQUE DE LA GRILLE::====
-Une unique fonction build_grid() suffit. Je propose de mettre en paramètres un tableau 2dimensions représentant notre grille. ([GRID_SIZE][GRID_SIZE]), ainsi qu'un pointeur structure Game (Game *s) qui nous sera utile pour accéder et modifier la struct originale sans pour autant copier tous les éléments. 
+
+Une unique fonction build_grid() suffit.
+Je propose de mettre en paramètres :
+-- un tableau 2D représentant notre grille ([GRID_SIZE][GRID_SIZE])
+-- un pointeur vers la structure Game (Game *s) qui nous sera utile pour accéder et modifier la struct originale sans pour autant copier tous les éléments. 
 
 On a également besoin de variables pour pouvoir accéder aux données (points de la grille, points d'une voiture)
-Donc itérer sur chaque point d'une voiture (id les voitures), itérer sur les voitures (indexées), itérer sur les points de la grille (empty ou filled).
 
-Commençons par initialiser notre grille à -1, (-1) indique que l'espace est vide. toutes les autres valeurs (non-négatives) indiquent donc présence d'une voiture (son id)
+-- Principe:
+On doit POUR POUVOIR REMPLIR LA GRILLE :
+
+->	itérer sur chaque vehicule (id : index),
+->	itérer sur chaque case d'un vehicule en fonction de sa taille ET direction,
+->	itérer sur les points de la grille (2D tab).
+
+
+--> Commençons par initialiser notre grille à -1,
+	(-1) indique que l'espace est vide.
+	Toutes les autres valeurs (non-négatives) indiquent donc présence d'une voiture (son id)
 
 |-> Grille vide initialisée, Ajouter des véhicules maintenant.
-faire un pointeur sur véhicules. Permet d'accéder à chaque véhicule sans passer par l'ensemble des éléments du tableau-struct Cars. (le pointeur pointe sur le véhicule actuel)
 
-++ Ne pas oublier mise à l'echelle des voitures. Si on prend facteur multiplicatif Zoom, pour passer d'une grill 6x6 (que je juge trop petite), à 18x18, il faudra aussi modifier la visualisation sur la grille. 
+--> Utiliser un pointeur sur vehicules.
+	Permet d'accéder au vehicule courant sans passer par l'ensemble des éléments du tableau-struct Cars. (le pointeur pointe sur le véhicule actuel)
+
+++ Ne pas oublier mise à l'echelle des voitures. Si on prend facteur multiplicatif (zoom x3), 
+	grille 6x6 (que je juge trop petite)
+	|-> grille 18x18 :: -> modifier la visualisation sur le terminal. 
+ 
 Cela dépend de la direction de chaque véhicule. i.e:
-[**] devient [***][***]
+[**] devient 	[***][***]
 	     [***][***]
 	     [***][***]
 
@@ -89,27 +110,43 @@ Si horizontal : longueur multipliée par facteur
 Si vertical : hauteur multipliée par facteur
 
 |-> Mise a l'echelle effectuée
+
 Maintenant associer chaque position sur la grille à l'id de la voiture.
-donc double loop avec incrementation x+dx, y+dy 
+--> simple double loop avec incrementation x+dx, y+dy 
+
+Objectif réalisé.
 
 
 ====::RENDERING::==== (27/12/2025) au (28/12/2025)
-Simple modification de la draw_grid afin qu'elle soit void, indiquer GRID_SIZE sur les define.
+-- Simple modification du type de la fnction draw_grid afin qu'elle soit void, indiquer GRID_SIZE sur les define.
+
 J'ai compris que les codes couleurs ne sont autres que ceux de l'ANSI (AMERICAN NATIONAL STANDARDS INSTITUTE) donc j'ai ajouté les codes usuels à mes define. 
 
-Tracer les véhicules grace a draw_car(Vehicule *v)
-pointe sur le vehicule actuel, va a la position top-left de chaque véhicule et modifie la culeur de fond sur chaque point du véhicule. 
+-- Implémentation de draw_car(Vehicule *v) pour tracer les véhicules.
+--+ pointe sur le vehicule actuel
+--+ se place a la position top-left de chaque véhicule 
+--+ modifie la couleur de fond sur chaque point du véhicule. 
 
-Test n°1, °2 n'ont pas abouti car mauvais positionnement. --> Passer par des variables pour éviter de s'emmeler les pinceaux. Car on se perd très vite.
-Au 3e test, j'arrive enfin à bien visualiser mon tableau 2D composé de 4 véhicules et des espaces vides sur le terminal, avec les couleurs bien positionnées dans ma grille. 
+-- Test n°1, °2 n'ont pas abouti car mauvais positionnement.
+--> Passer par des variables pour éviter de s'emmeler les pinceaux. Car on se perd très vite.
+
+-- Au 3e test, j'arrive enfin à bien visualiser mon tableau 2D composé de 4 véhicules et des espaces vides sur le terminal, avec les couleurs bien positionnées dans ma grille. 
 
 |-> Le plus dur est fait. Tests de demain :=> modifier le tableau et visualiser sur le terminal (principe du mouvement des véhicules).
 
 
-On passe maintenant au mouvement d'un véhicule. La logique est simple, dans notre grille 2D : On séléctionne un véhicule et en fonction de sa direction, on le fait bouger. Vertical/Horizontal --> on ajoute un membre {dy}, {dx} à sa position initiale (accessible depuis la structure de jeu Game, passée en pointeur pour ne pas copier tout etuniquement modifier ce dont on a besoin).
+====::MOUVEMENT DES VEHICULES::==== (28/12/2025) au (29/12/2025)
+On passe maintenant au mouvement d'un véhicule. La logique est simple:
+
+++ On séléctionne un véhicule et en fonction de sa direction, on le fait bouger. Vertical/Horizontal --> on ajoute un membre {dy}, {dx} à sa position initiale (accessible depuis la structure de jeu Game, passée en pointeur pour ne pas copier tout etuniquement modifier ce dont on a besoin).
+
+-- Fonction de base :
 move_vehicule(Game *s, int id, int dx, int dy)	
 		s->vehicles[id].x += dx; 
 		s->vehicles[id].y += dy;
+
+-- Observation :
+La fonction autorise le mouvement hors de la grille, le mouvement interdit (contraire à la direction) et le chevauchement inter-vehicule.
 
 |-> Ajouter les contraintes sur la direction, car ma fonction actuelle laisse un véhicule horizontal bouger en verticale.
 |-> Ajouter les contraintes sur la sortie de grille des véhicules et le chevauchement entre véhicules. 
@@ -118,3 +155,38 @@ Donc réfléchir à une fonction qui dit si le movement d'un véhicule est legal
 Definition d'une fonction secondaire à call dans la fonction de mouvement. 
 can_move(Game *s, int id, int dx, int dy)
 qui traite les contraintes citées auparavant.
+
+====::VERIFICATION DE LA LEGALITE DES MOUVEMENTS::====
+Faire appel à une fonction secondaire qui puisse indiquer si le mouvement est permis (si les contraintes ci-dessus sont respectees)
+
+-- Fonction :
+can_move(Game *s, int id, int dx, int dy)
+
+Cette fonction est utile car elle autorise le mouvement uniquement s'il est valide. 
+On separe donc le mouvement en deux etapes distinctes : 
+-- validation/check :: can_move
+-- mouvement :: move_vehicule
+
+====::TESTS ET DEBUG::====
+On re-edit les fonctions pour prendre en compte :
+
+-- La selection cyclique des id de véhicules de 0 à n-1. (modulo)
+  |-> Ajout des inputs de selection (UpArrow et DownArrow) pour naviguer les id de vehicules
+
+-- Le mouvement des véhicules input-dependant ('h', 'j', 'k', 'l')
+
+-- Le quit avec 'q'
+
+====::ETAT ACTUEL::====
+-- Grid fonctionelle
+-- Rendering (UI) valide mais voir meilleur {hints, nb moves, valid inputs, car viewing (associer id et couleurs)}
+-- Mouvement ssi legalite 
+
+++ A ajouter ++
++++ Better UI {FAIT}
++++ win condition
++++ level selection
++++ paufinnage du code (Doxygen + commentaires)
+
+
+

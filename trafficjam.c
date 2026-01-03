@@ -76,41 +76,56 @@ Game init_game(void)
 
 void draw_grid(void)
 {
-	int i;
-	allerxy(GRID_ORIGIN_X - 1, GRID_ORIGIN_Y - 1);
-	printf("+==================+");
+    	int x, y;
 
- 	for (i = 0; i < GRID_SIZE; i++) 
-	{
-        	allerxy(GRID_ORIGIN_X - 1, GRID_ORIGIN_Y + i);
-        	printf("|                  |");
+    	for (y = 0; y <= GRID_SIZE; y++)
+    	{
+        	allerxy(GRID_ORIGIN_X, GRID_ORIGIN_Y + y);
+        	for (x = 0; x <= GRID_SIZE; x++)
+        	{
+            		if (y == 0 || y == GRID_SIZE)
+                		printf("-");
+            		else if (x == 0 || x == GRID_SIZE)
+                		printf("|");
+            		else
+                		printf(".");
+        	}
     	}
-
-    	allerxy(GRID_ORIGIN_X - 1, GRID_ORIGIN_Y + GRID_SIZE);
-    	printf("+==================+");
 }
 
-void draw_car(Vehicule *v) 
+void draw_exit(void)
+{
+    	int y = GRID_ORIGIN_Y + (GRID_SIZE / 2);
+    	allerxy(GRID_ORIGIN_X + GRID_SIZE, y);
+    	printf("  ");
+}
+
+
+void draw_car(Vehicule *v, int selected)
 {
 	int x, y;
-
-    	/* SCALE THE POSITION */
     	int sx = GRID_ORIGIN_X + v->x;
     	int sy = GRID_ORIGIN_Y + v->y;
 
     	int len = (v->dir == 'h') ? v->length * CELL : CELL;
     	int hei = (v->dir == 'v') ? v->length * CELL : CELL;
 
+    	if (selected) mode_clignotant();
     	couleurfond(v->color);
 
-    	for (y = 0; y < hei; y++) 
-	{
+    	for (y = 0; y < hei; y++)
+    	{
         	allerxy(sx, sy + y);
         	for (x = 0; x < len; x++)
             		printf(" ");
     	}
 
+    	/* write ID in center */
+   	allerxy(sx + len/2, sy + hei/2);
+    	printf("%d", v->id);
+
     	resetcouleurs();
+    	if (selected) desactive_mode_clignotant();
 }
 
 void render(Game *s)
@@ -119,9 +134,9 @@ void render(Game *s)
 	
 	efface_ecran();
 	draw_grid();
-
+	draw_exit();
 	for (i = 0; i < s->count; i++)
-		draw_car(&s->Cars[i]);
+		draw_car(&s->Cars[i], i == s->selected);
 	
 	allerxy(1, 1);
     	printf("Selected car: %d  ", s->selected);
