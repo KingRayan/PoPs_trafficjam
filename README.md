@@ -66,13 +66,13 @@ PoPs_trafficjam/
 
 **C99 version:**
 ```bash
-gcc -std=c99 -Wall -Wextra -pedantic main.c -o trafficjam
+gcc -std=c99 -Wall main.c -o trafficjam
 ./trafficjam
 ```
 **C99 version:**
 ```bash
-gcc -std=c90 -Wall -Wextra -pedantic main.c -o trafficjam_c90
-./trafficjam_c90
+gcc -std=c90 -Wall main.c -o trafficjam
+./trafficjam
 ```
 
 ## Notes
