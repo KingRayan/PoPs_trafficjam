@@ -201,16 +201,16 @@ Aussi, Ajouter un ecran de victoire pour indiquer au user qu'il a gagne.
 
 -- Simple utilisation des fonctions presentes dans console.c 
 
-====::ETAT ACTUEL::==== (03/01/2025) {J-2}
+====::ETAT ACTUEL::==== (03/01/2026) {J-2}
 
 -- Grid fonctionelle
 -- Rendering (UI) valide mais voir meilleur {hints, nb moves, valid inputs, car viewing (associer id et couleurs)}
 -- Mouvement ssi legalite 
 
 ++ A ajouter ++
-+++ Better UI {FAIT}
-+++ win condition
-+++ level selection
++++ Better UI {FAIT le 03/01/2026}
++++ win condition {FAIT le 04/01/2026}
++++ level selection {A faire}
 +++ paufinnage du code (Doxygen + commentaires)
 
 En date du 04/01/2026 
@@ -224,5 +224,7 @@ Pour cela j'ai fait appel a une lookup table implementee avec switch case, elle 
 Meilleure que mon ancienne implementation du code couleur avec les define en debut de code. 
 De plus, d'apres ce que j'ai appris cette structure n'enregistre rien en mémoire contrairement aux maps. 
 
+-- Ajout d'une fonction win_screen() qui s'affiche quand le user a gagne.
+-- Reverification des changements render/logique. (nottament multiplication lors du zoom. Ne pas zoomer les valeurs logiques, zoomer le render uniquement :: sinon voir des erreurs memoire / segfault) car ma logique ne prend pas en compte de grandes valeurs i.e n elements au lieu d'un seul attendu itialement pour un zoom facteur n). En d'autres termes un tableau 6 ne peut pas contenir 18 valeurs. Donc uniquement lire les valeurs du tableau et les multiplier par n au rendering au lieu de generer un tableau m*n.
 
-
+-- Ne pas oublier doxygen et commentaires
