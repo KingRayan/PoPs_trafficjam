@@ -69,7 +69,7 @@ void build_grid(int grid[GRID_SIZE][GRID_SIZE], Game *s)
 		int lon = (v->dir == 'v') ? v->length : 1;	// vertical   <=> height*CELL
 		
 		for(dy = 0; dy < lon; dy++)
-			for(dx = 0; dx < lon; dx++)
+			for(dx = 0; dx < lar; dx++)
 				grid[v->y + dy][v->x + dx] = v->id; // associer les cellules occupées aux véhicules distincts	
 	}
 
@@ -82,7 +82,7 @@ int check_win(Game *s)
     	if (red->dir != 'h')
         	return 0;
 
-    	if (red->x + red->length * CELL == GRID_SIZE)
+    	if (red->x + red->length == GRID_SIZE)
         	return 1;
 
     	return 0;
@@ -242,8 +242,26 @@ void draw_controls(void)
     	allerxy(1, y++);
     	printf("Quit      : q");
 }
-
-
+void win_screen(Game *s)
+{
+	efface_ecran();
+	allerxy(GRID_ORIGIN_X + GRID_SIZE / 2, GRID_ORIGIN_Y + GRID_SIZE / 2);
+	policegras();
+	couleurfond(42);
+	couleurpolice(32);
+	printf("YOU WIN !");
+	couleurpolice(37);
+	allerxy(1, GRID_ORIGIN_Y + GRID_SIZE / 2 + 1);
+	printf("Took you ");
+	couleurpolice(31);
+	printf("%d ", s->moves);
+	couleurpolice(37);
+	printf("moves");
+	resetcouleurs();
+	allerxy(1, GRID_ORIGIN_Y + GRID_SIZE +2);
+	printf("Press any key to exit...");
+	recupcar();
+}
 
 void render(Game *s)
 {
@@ -276,8 +294,8 @@ int can_move(Game *s, int id, int dx, int dy) {
     	int nx = v->x + dx;
    	int ny = v->y + dy;
 
-    	int w = (v->dir == 'h') ? v->length * CELL : CELL;
-    	int h = (v->dir == 'v') ? v->length * CELL : CELL;
+    	int w = (v->dir == 'h') ? v->length : 1;
+    	int h = (v->dir == 'v') ? v->length : 1;
 
     	if (nx < 0 || ny < 0 || nx + w > GRID_SIZE || ny + h > GRID_SIZE)
         	return 0;
@@ -330,9 +348,7 @@ int main(void)
 		
 		if(check_win(&game))
 		{
-			efface_ecran();
-			allerxy(40,20);
-			printf("Game won !");
+			win_screen(&game);
 			break;
 		}
 
@@ -349,16 +365,16 @@ int main(void)
             		game.selected = (game.selected + 1) % game.count;
 
         	else if (key == 'h')
-            		move_vehicule(&game, game.selected, -CELL, 0);
+            		move_vehicule(&game, game.selected, -1, 0);
 
         	else if (key == 'l')
-            		move_vehicule(&game, game.selected, CELL, 0);
+            		move_vehicule(&game, game.selected, 1, 0);
 
         	else if (key == 'k')
-            		move_vehicule(&game, game.selected, 0, -CELL);
+            		move_vehicule(&game, game.selected, 0, -1);
 
         	else if (key == 'j')
-            		move_vehicule(&game, game.selected, 0, CELL);
+            		move_vehicule(&game, game.selected, 0, 1);
       	}
 
 	resetterminal();
