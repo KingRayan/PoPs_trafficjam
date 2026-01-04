@@ -11,29 +11,29 @@
 
 /* INFORMATIONS SUR LA GRID */
 
-#define GRID_SIZE 6  				// taille logique de la grille (6x6)
-#define CELL 3					// cellule logique (3x3) {rendering}
-#define MAX_VEHICULES 10			// nb max vehicules par partie
+#define GRID_SIZE 6  				/* taille logique de la grille (6x6) */
+#define CELL 3					/* cellule logique (3x3) {rendering} */
+#define MAX_VEHICULES 10			/* nb max vehicules par partie */
 
 #define GRID_ORIGIN_X 32	
-#define GRID_ORIGIN_Y 15			// grille <=> repere orthonormé vers la droite et le bas
+#define GRID_ORIGIN_Y 15			/* grille <=> repere orthonormé vers la droite et le bas */
 
 
 typedef struct {
-	int id; 				// referencer les vehicules de la grille
-	int x, y; 				// top-left point vehicule
-	char dir; 				// 'h'(horizontal) or 'v' (vertical)
-	int length; 				// 2(car) or 3(truck)
-	int color; 				// differencier les voitures coté UX 
+	int id; 				/* referencer les vehicules de la grille */
+	int x, y; 				/* top-left point vehicule */
+	char dir; 				/* 'h'(horizontal) or 'v' (vertical) */
+	int length; 				/* 2(car) or 3(truck) */
+	int color; 				/* differencier les voitures coté UX */
 }Vehicule;
 
 
 typedef struct{
-	Vehicule Cars[MAX_VEHICULES]; 		// vehicules de la grille 
-	int count; 		     		// nb vehicules actifs
-	int selected;				// id vehicule selected
-	int moves;				// nb  moves in a game
-	int HELP;				// bool d'affichage d'aide (UX)
+	Vehicule Cars[MAX_VEHICULES]; 		/* vehicules de la grille */ 
+	int count; 		     		/* nb vehicules actifs */
+	int selected;				/* id vehicule selected */
+	int moves;				/* nb  moves in a game */
+	int HELP;				/* bool d'affichage d'aide (UX) */
 }Game;
 
 
@@ -80,28 +80,28 @@ const char *color_name(int color)
  */
 void build_grid(int grid[GRID_SIZE][GRID_SIZE], Game *s)
 {
-	int x, y; 							// iteration sur la grille (x, y)
-	int i;	  							// iteration sur les vehicules
-	int dx, dy;							// iteration sur un vehicule(dx, dy)
+	int x, y; 							/* iteration sur la grille (x, y) */
+	int i;	  							/* iteration sur les vehicules */
+	int dx, dy;							/* iteration sur un vehicule(dx, dy) */
 
 	/* initialiser la grille : cases vides */
 	for(y = 0; y < GRID_SIZE; y++)
 		for(x = 0; x < GRID_SIZE; x++) 
-			grid[y][x] = -1; 				// -1 = empty
+			grid[y][x] = -1; 				/* -1 = empty */
 	
 	/* placer les vehicules sur la grille */
 	for(i = 0; i < s->count; i++)
 	{
-		Vehicule *v = &s->Cars[i]; 				// pointe sur le vehicule actuel
+		Vehicule *v = &s->Cars[i]; 				/* pointe sur le vehicule actuel */
 		
 		/* fixer sa taille (en fonction de x et y) */
-		int len = (v->dir == 'h') ? v->length : 1;		// longueur logique : x
-		int hei = (v->dir == 'v') ? v->length : 1;		// hauteur logique  : y
+		int len = (v->dir == 'h') ? v->length : 1;		/* longueur logique : x */
+		int hei = (v->dir == 'v') ? v->length : 1;		/* hauteur logique  : y */
 		
 		/* associer les cases aux vehicules qui les occupent */		
-		for(dy = 0; dy < len; dy++)
-			for(dx = 0; dx < hei; dx++)
-				grid[v->y + dy][v->x + dx] = v->id; 	// mettre ID vehicule dans chaque case qu'il occupe	
+		for(dy = 0; dy < hei; dy++)
+			for(dx = 0; dx < len; dx++)
+				grid[v->y + dy][v->x + dx] = v->id; 	/* mettre ID vehicule dans chaque case qu'il occupe */
 	}
 
 }
@@ -119,15 +119,15 @@ void build_grid(int grid[GRID_SIZE][GRID_SIZE], Game *s)
  */
 int check_win(Game *s) 
 {
-    	Vehicule *red = &s->Cars[0]; 					// annoncer redCar a ID 0
+    	Vehicule *red = &s->Cars[0]; 					/* annoncer redCar a ID 0 */
 	
 	/* redCar ne peut pas etre en pos vertical */
     	if (red->dir != 'h')
-        	return 0;						// err si redCar vertical
+        	return 0;						/* err si redCar vertical */
 
 	/* redCar reached exit */
     	if (red->x + red->length == GRID_SIZE)				
-        	return 1; 						// win 
+        	return 1; 						/* win */
 
     	return 0;
 }
@@ -155,21 +155,50 @@ Game init_game(void)
     	Game s;
 
 	/* variables de jeu */
-    	s.count = 5; 							// nb vehicules de la partie
-    	s.selected = 0;							// ID vehicule courant (initial redCar)
-	s.moves = 0;							// aucun move initial
-	s.HELP = 0;							// aide desactivee par defaut (toggle)
+    	s.count = 5; 							/* nb vehicules de la partie */
+    	s.selected = 0;							/* ID vehicule courant (initial redCar) */
+	s.moves = 0;							/* aucun move initial */
+	s.HELP = 0;							/* aide desactivee par defaut (toggle) */
 
     	/* Red Car */
-    	s.Cars[0] = (Vehicule){0, 1, 2, 'h', 2, 31};
+    	s.Cars[0].id = 0;
+	s.Cars[0].x = 1;
+	s.Cars[0].y = 2;
+	s.Cars[0].dir = 'h';
+	s.Cars[0].length = 2;
+	s.Cars[0].color = 31;
+
+
 
     	/* Vertical Cars */
-    	s.Cars[1] = (Vehicule){1, 3, 0, 'v', 3, 32};
-    	s.Cars[2] = (Vehicule){2, 4, 3, 'v', 2, 34};
+    	s.Cars[1].id =1;
+    	s.Cars[1].x = 3;
+    	s.Cars[1].y = 0;
+    	s.Cars[1].dir = 'v';
+    	s.Cars[1].length = 3;
+    	s.Cars[1].color = 32;
+
+    	s.Cars[2].id = 2;
+    	s.Cars[2].x = 4;
+    	s.Cars[2].y = 3;
+    	s.Cars[2].dir = 'v';
+    	s.Cars[2].length = 2;
+    	s.Cars[2].color = 34;
 
     	/* Horizontal Cars */
-    	s.Cars[3] = (Vehicule){3, 0, 0, 'h', 3, 35};
-    	s.Cars[4] = (Vehicule){4, 2, 5, 'h', 2, 36};
+    	s.Cars[3].id = 3;
+    	s.Cars[3].x = 0;
+    	s.Cars[3].y = 0;
+    	s.Cars[3].dir = 'h';
+    	s.Cars[3].length = 3;
+    	s.Cars[3].color = 35;
+
+	s.Cars[4].id = 4;
+	s.Cars[4].x = 2;
+	s.Cars[4].y = 5;
+	s.Cars[4].dir = 'h';
+	s.Cars[4].length = 2;
+	s.Cars[4].color = 36;
 
     	return s;
 }
@@ -196,38 +225,38 @@ void draw_grid(void)
 {
     	int gx, gy;
 
-    	int width  = GRID_SIZE * CELL;						// width on screen (nb caracteres)
-    	int height = GRID_SIZE * CELL;						// height on screen (nb caracteres)
+    	int width  = GRID_SIZE * CELL;						/* width on screen (nb caracteres) */
+    	int height = GRID_SIZE * CELL;						/* height on screen (nb caracteres) */
 
     	/* ================ LIGNES HORIZONTALES ================== */
     	
-	for (gy = 0; gy <= GRID_SIZE; gy++) 					// iteration sur les lignes grid
+	for (gy = 0; gy <= GRID_SIZE; gy++) 					/* iteration sur les lignes grid */
     	{
-        	int sy = GRID_ORIGIN_Y + gy * CELL;				// calcul equivalent grid_y --> screen_y 
+        	int sy = GRID_ORIGIN_Y + gy * CELL;				/* calcul equivalent grid_y --> screen_y */
 
-        	for (gx = 0; gx <= width; gx++) 				// iteration sur les colonnes grid
+        	for (gx = 0; gx <= width; gx++) 				/* iteration sur les colonnes grid */
 		{
-            		allerxy(GRID_ORIGIN_X + gx, sy);			// va a chaque point de cellules
+            		allerxy(GRID_ORIGIN_X + gx, sy);			/* va a chaque point de cellules */
 
-            		if (gx == 0 || gx == width)				// verifie coins et bordures
-                		printf("+");					// + aux coins des cellules
+            		if (gx == 0 || gx == width)				/* verifie coins et bordures */
+                		printf("+");					/* + aux coins des cellules */
             		else
-                		printf("-");					// - autrement
+                		printf("-");					/* - autrement */
         	}
     	}
 
       	/* ================ LIGNES VERTICALES ================== */
 
-    	for (gx = 0; gx <= GRID_SIZE; gx++) 					// iteration sur les colonnes grid
+    	for (gx = 0; gx <= GRID_SIZE; gx++) 					/* iteration sur les colonnes grid */
 	{
-        	int sx = GRID_ORIGIN_X + gx * CELL;				// calcul equivalent grid_x --> screen_x
+        	int sx = GRID_ORIGIN_X + gx * CELL;				/* calcul equivalent grid_x --> screen_x */
 				
-        	for (gy = 0; gy <= height; gy++)				// iteration sur les lignes grid
+        	for (gy = 0; gy <= height; gy++)				/* iteration sur les lignes grid */
 		{
-            		allerxy(sx, GRID_ORIGIN_Y + gy);			// va a chaque point de cellule
+            		allerxy(sx, GRID_ORIGIN_Y + gy);			/* va a chaque point de cellule */
 
             		/* Modulo cell pour savoir positionnement */
-            		if (gy % CELL != 0) printf("|");			// tracer '|' si modulo non nul, autrement c'est un coin donc '+' deja oresent
+            		if (gy % CELL != 0) printf("|");			/* tracer '|' si modulo non nul, autrement c'est un coin donc '+' deja oresent */
         	}
 	}
 }
@@ -244,18 +273,19 @@ void draw_grid(void)
  */
 void draw_exit(void)
 {
+	int i, j;
 	/* position verticale (y) de la sortie */
-    	int exit_y = GRID_ORIGIN_Y + ((GRID_SIZE / 2) - 1) * CELL;		// milieu
+    	int exit_y = GRID_ORIGIN_Y + ((GRID_SIZE / 2) - 1) * CELL;		/* milieu */
 	
 	/* position horizontale (x) de la sortie */
-    	int exit_x = GRID_ORIGIN_X + GRID_SIZE * CELL;				// fin de grille
+    	int exit_x = GRID_ORIGIN_X + GRID_SIZE * CELL;				/* fin de grille */
 
     	
-    	for (int i = 0; i < CELL; i++) 						// itération sur les rows (lignes)
+    	for (i = 0; i < CELL; i++) 						/* itération sur les rows (lignes) */
     	{
         	allerxy(exit_x, exit_y + i);
-        	for (int j = 0; j < CELL; j++) 					// itération sur les columns (colonnes)
-            		printf(" ");						// VISUELLEMENT trace l'ouverture de sortie
+        	for (j = 0; j < CELL; j++) 					/* itération sur les columns (colonnes) */
+            		printf(" ");						/* VISUELLEMENT trace l'ouverture de sortie */
     	}
 
 }
@@ -275,22 +305,22 @@ void draw_car(Vehicule *v, int selected)
 	int x, y;
 
 	/* position on-screen (TopLeft point du vehicule) */
-    	int sx = GRID_ORIGIN_X + v->x * CELL + 1; 			// + 1 evite la CellBorder gauche
-    	int sy = GRID_ORIGIN_Y + v->y * CELL + 1;			// +1 evite la CellBorder haute
+    	int sx = GRID_ORIGIN_X + v->x * CELL + 1; 			/* + 1 evite la CellBorder gauche */
+    	int sy = GRID_ORIGIN_Y + v->y * CELL + 1;			/* +1 evite la CellBorder haute */
 	
 	/* taille on-screen du vehicule */
-    	int len = ((v->dir == 'h') ? v->length : 1) * (CELL - 1); 	// laisse une colonne pour CellBorder droit
-    	int hei = ((v->dir == 'v') ? v->length : 1) * (CELL - 1); 	// laiise une ligne pour CellBorder bas
+    	int len = ((v->dir == 'h') ? v->length : 1) * (CELL - 1); 	/* laisse une colonne pour CellBorder droit */
+    	int hei = ((v->dir == 'v') ? v->length : 1) * (CELL - 1); 	/* laiise une ligne pour CellBorder bas */
 
     	/* clignote si le vehicule est selected */
 	if (selected) mode_clignotant();
     	couleurpolice(v->color);
 	
 	/* dessin char par char */
-    	for (y = 0; y < hei; y++)					// iteration sur hauteur (y) du vehicule
+    	for (y = 0; y < hei; y++)					/* iteration sur hauteur (y) du vehicule */
     	{
         	allerxy(sx, sy + y);
-        	for (x = 0; x < len; x++)				// iteration sur longueur (x) du vehicule
+        	for (x = 0; x < len; x++)				/* iteration sur longueur (x) du vehicule */
             		printf("█");
       	}
 
@@ -313,32 +343,32 @@ void draw_car(Vehicule *v, int selected)
  */
 void draw_HUD(Game *s)
 {	
-	int y = 1;									// lignes on-screen
+	int y = 1;									/* lignes on-screen */
 
-	Vehicule *v = &s->Cars[s->selected];						// faire pointer v sur le vehicule courant
+	Vehicule *v = &s->Cars[s->selected];						/* faire pointer v sur le vehicule courant */
 
 	/* Affiche ID du vehicule courant */
 	allerxy(1, y);						
-	printf("Selected car ID : %d", s->selected);					// affiche ID vehicule courant
+	printf("Selected car ID : %d", s->selected);					/* affiche ID vehicule courant */
 	
 	/* Affiche couleur du vehicule dans sa meme couleur */
 	allerxy(1, ++y);	
 	printf("Color : \t");
-	couleurpolice(v->color);							// couleur texte vehicule courant
-	printf("%s", color_name(v->color));						// appel a LUT et affiche couleur vehicule courant
-	couleurpolice(37); 								// couleur texte reset 
+	couleurpolice(v->color);							/* couleur texte vehicule courant */
+	printf("%s", color_name(v->color));						/* appel a LUT et affiche couleur vehicule courant */
+	couleurpolice(37); 								/* couleur texte reset */ 
 	
 	/* Affiche direction du vehicule courant */
 	allerxy(1,++y);
-	printf("Direction : %s", v->dir == 'h' ? "HORIZONTAL" : "VERTICAL");		// affiche si vehicule Horizontal ou Vertical
+	printf("Direction : %s", v->dir == 'h' ? "HORIZONTAL" : "VERTICAL");		/* affiche si vehicule Horizontal ou Vertical */
 	
 	/* Affiche le nombre de mouvements effectués au courant de la partie */
 	allerxy(1,++y);
-	printf("Moves : %d", s->moves);							// affiche nb moves 
+	printf("Moves : %d", s->moves);							/* affiche nb moves */ 
 
 	/* Affiche le texte pour indiquer comment afficher l'aide */
 	allerxy(1, y + 2);
-	printf("Press Shift + H for controls");						// affiche txt help
+	printf("Press Shift + H for controls");						/* affiche txt help */
 
 }
 
@@ -389,23 +419,23 @@ void draw_controls(void)
  */
 void win_screen(Game *s)
 {
-	efface_ecran();						// clear screen
+	efface_ecran();						/* clear screen */
 	
 	/* Affiche YOU WIN au milieu de l'ecran */
 	allerxy(GRID_ORIGIN_X + GRID_SIZE / 2, GRID_ORIGIN_Y + GRID_SIZE / 2);
 	policegras();
-	couleurpolice(32);					// COLOR TEXTE GREEN
+	couleurpolice(32);					/* COLOR TEXTE GREEN */
 	printf("YOU WIN !");
 	
 	/* Affiche le nombre de moves */
 	couleurpolice(37);
 	allerxy(1, GRID_ORIGIN_Y + GRID_SIZE / 2 + 1);
 	printf("Took you ");
-	couleurpolice(31);					// COLOR TEXT WHITE
+	couleurpolice(31);					/* COLOR TEXT WHITE */
 	printf("%d ", s->moves);
-	couleurpolice(37);					// COLOR TEXT RED
+	couleurpolice(37);					/* COLOR TEXT RED */
 	printf("moves");
-	resetcouleurs();					// RESET TEXT COLOR
+	resetcouleurs();					/* RESET TEXT COLOR */
 	
 	/* Affiche le texte d'exit */
 	allerxy(1, GRID_ORIGIN_Y + GRID_SIZE +2);
@@ -427,19 +457,20 @@ void win_screen(Game *s)
  * @return 	void
  */
 void render(Game *s)
-{
-	efface_ecran();						// clear screen
+{	
+	int i;
+	efface_ecran();						/* clear screen */
 
-	draw_grid();						// affiche la grid
-	draw_exit();						// affiche la sortie
+	draw_grid();						/* affiche la grid */
+	draw_exit();						/* affiche la sortie */
 	
-	for (int i = 0; i < s->count; i++)
-		draw_car(&s->Cars[i], i == s->selected);	// affiche chaque voiture (itération boucle) 
-								// clignote si ID voiture qu'il dessine est celui selected 
+	for (i = 0; i < s->count; i++)
+		draw_car(&s->Cars[i], i == s->selected);	/* affiche chaque voiture (itération boucle) */
+								/* clignote si ID voiture qu'il dessine est celui selected */
 	
-	draw_HUD(s);						// affiche le HUD
+	draw_HUD(s);						/* affiche le HUD */
 
-	if(s->HELP) draw_controls();				// affiche les controls si activated
+	if(s->HELP) draw_controls();				/* affiche les controls si activated */
     	
 }
 
@@ -461,16 +492,16 @@ void render(Game *s)
  */
 int can_move(Game *s, int id, int dx, int dy) 
 {
-    	int grid[GRID_SIZE][GRID_SIZE];						// initialise une grid
+    	int grid[GRID_SIZE][GRID_SIZE];						/* initialise une grid */
     	int x, y;
 
-    	build_grid(grid, s);							// build la grid de la partie
+    	build_grid(grid, s);							/* build la grid de la partie */
 
-    	Vehicule *v = &s->Cars[id];						// fait pointer v sur le vehicule courant
+    	Vehicule *v = &s->Cars[id];						/* fait pointer v sur le vehicule courant */
 	
 	/* teste les breakcase directionnels */
-    	if (v->dir == 'h' && dy != 0) return 0;					// direction contraire au mouvement			
-    	if (v->dir == 'v' && dx != 0) return 0;					// donc non valide
+    	if (v->dir == 'h' && dy != 0) return 0;					/* direction contraire au mouvement */			
+    	if (v->dir == 'v' && dx != 0) return 0;					/* donc non valide */
 	
 	/* calcul des nouvelles positions du vehicule */
     	int nx = v->x + dx;							
@@ -488,8 +519,8 @@ int can_move(Game *s, int id, int dx, int dy)
     	for (y = 0; y < h; y++)
         	for (x = 0; x < w; x++) 
 		{
-            		int g = grid[ny + y][nx + x];					// cellule a la nouvelle position
-            		if (g != -1 && g != id)						// cellule non-vide <=> occupee par autre vehicule
+            		int g = grid[ny + y][nx + x];					/* cellule a la nouvelle position */
+            		if (g != -1 && g != id)						/* cellule non-vide <=> occupee par autre vehicule */
                 		return 0;
         	}
 
@@ -515,7 +546,7 @@ void move_vehicule(Game *s, int id, int dx, int dy)
 	{
 		s->Cars[id].x += dx;
 		s->Cars[id].y += dy;
-		s->moves += 1;								// incremente le cpt moves de la partie
+		s->moves += 1;								/* incremente le cpt moves de la partie */
 	}
 
 }
@@ -533,13 +564,13 @@ void move_vehicule(Game *s, int id, int dx, int dy)
  */
 int read_key(void) 
 {
-        int c = recupcar();	 					// rcupere le character
-        if (c == 27) 							// detecte esc 
+        int c = recupcar();	 					/* rcupere le character */
+        if (c == 27) 							/* detecte esc */
         {
-                if (recupcar() == '[')					// detecte esc sequence
-                        return recupcar();				// lit le dernier char de la sequence 
-        }
-        return c;							// retourne ce dernier char 
+                if (recupcar() == '[')					/* detecte esc sequence */
+                        return recupcar();				/* lit le dernier char de la sequence */ 
+	}
+        return c;							/* retourne ce dernier char */
 }
 
 /* ================================================= MAIN ==================================================== */
@@ -558,50 +589,49 @@ int read_key(void)
  */
 int main(void)
 {
-	nostdoutbuff();									// Visualiser les changements en temps reel 
-											// LIEN <=> électronique embarquée à temps critique
-                       									// où chaque action doit être visible / traitée sans délai
+	nostdoutbuff();									/* Visualiser les changements en temps reel */
+											/* LIEN <=> électronique embarquée à temps critique */
+                       									/* où chaque action doit être visible / traitée sans délai */
 	desactive_curseur();
 
-    	Game game = init_game();							// initialise l'etat du jeu avec les vehicules 
+    	Game game = init_game();							/* initialise l'etat du jeu avec les vehicules */
 
    	while (1) 
     	{
-        	int won = 0;
-		render(&game);								// appel a render qui dessine grille, vehicules, HUD, Controls (si activated)
+		render(&game);								/* appel a render qui dessine grille, vehicules, HUD, Controls (si activated) */
 		
 		/* Verifie si game won */
 		if(check_win(&game))					
 		{
-			win_screen(&game);						// affiche le win screen
-			break;								// sort de la boucle principale
+			win_screen(&game);						/* affiche le win screen */
+			break;								/* sort de la boucle principale */
 		}
 
-		int key = read_key();							// lit l'input du joueur en traitant les sequences
+		int key = read_key();							/* lit l'input du joueur en traitant les sequences */
        
-		if(key == 'q') break;							// quitter le jeu
+		if(key == 'q') break;							/* quitter le jeu */
 
-		if(key == 'H') game.HELP = !game.HELP; 					// afficher les controls {VHDL 101 sig = !sig sur les testbench}
+		if(key == 'H') game.HELP = !game.HELP; 					/* afficher les controls {VHDL 101 sig = !sig sur les testbench} */
 		
 		/* Selection du vehicule avec escape sequence (read_key marche) */ 
 		if(key == 'B')
-			game.selected = (game.selected - 1 + game.count) % game.count;	// DownArrow 
+			game.selected = (game.selected - 1 + game.count) % game.count;	/* DownArrow */
 	
 		else if (key == 'A')
-            		game.selected = (game.selected + 1) % game.count;		// UpArrow 
+            		game.selected = (game.selected + 1) % game.count;		/* UpArrow */
 		
 		/* Move du vehicule*/
         	else if (key == 'h')
-            		move_vehicule(&game, game.selected, -1, 0);			// 'h' left
+            		move_vehicule(&game, game.selected, -1, 0);			/* 'h' left */
 
         	else if (key == 'l')
-            		move_vehicule(&game, game.selected, 1, 0);			// 'l' right
+            		move_vehicule(&game, game.selected, 1, 0);			/* 'l' right */
 
         	else if (key == 'k')
-            		move_vehicule(&game, game.selected, 0, -1);			// 'k' down
+            		move_vehicule(&game, game.selected, 0, -1);			/* 'k' down */
 
         	else if (key == 'j')
-            		move_vehicule(&game, game.selected, 0, 1);			// 'j' up
+            		move_vehicule(&game, game.selected, 0, 1);			/* 'j' up */
       	}
 
 	resetterminal();
