@@ -2,15 +2,20 @@ Bonjour,
 	Bienvenue dans le fichier d'avancement du projet "traffic jam".
 	Ce dernier, est structuré par étapes du projet.
 
-Etape 0 : (11/12/2025) 
+=== Etape 0 : (11/12/2025) 
 	- Vérifier le bon fonctionnement de la bibliothèque console.h en compilant et testant le programme test.c;
 	
 	++ bibliothèque testée, utilisation des fonctions *d'echo*, *couleur pour la police et le background*  ainsi que la possibilité de *renommer le terminal* et l'*effacer*. (utile pour notre jeu).
 
+------> Note : Je ne comprenais pas vraiment l'utilité du stdoutbuffer, son activation et sa desactivation. Ce n'est qu'en me documentant bien plus tard, que j'ai compris son utilité cruciale. 
+		En C la sortie est bufferisee : les printf (generalisable a tout stdout) ne s'affichent pas directement {stockage tampon}
+		Il est crucial pour l'electronicien que je compte devenir plus tard, d'apprendre ces notions importantes; surtout dans le domaine des technologies à temps critique, i.e avion, fusée, santé etc...
+ 
 === Etape 1 : (11/12/2025) 
 	- Affichage du plateau vide.
+	
 	fonction :  generategrid(gridl, gridh) 02 entiers égaux? autant utiliser un seul paramètre.
-	|-> augmenter gridl dans les niveaux plus durs? (idée)
+		|-> augmenter gridl dans les niveaux plus durs? (idée)
 	
 	++ test1 effectué, simple génération de grille à l'aide d'une for loop.
 	   questionnement, si ce ne serait pas plus judicieux pour la suite de passer directement par un tableau 2D.
@@ -41,6 +46,8 @@ i
 	|-> utiliser un tab de pointeurs par la suite pour (manipuler la mémoire) //  éviter les collisions entre voitures ?
 	|-> définir directement struct Vehicule{Point, tailler, direction} ? 
 
+------> Remarque : Ici on commence deja à separer la logique du rendu.  
+	
 === Etape 3 : (12/12/2025) au (17/12/2025)
 	- Faire bouger une voiture. Pas très compliqué en display uniquement. 
 	|-> Trouver la logique pour faire bouger les voitures (en interne // sans display) i.e tableaux, pointeurs etc...
@@ -49,142 +56,147 @@ i
 
 ====::Etapes suivantes::====
 
-Maintenant que je comprends mieux comment la sortie est visualisée, il est impératif de différencier la logique du jeu (tableaux et pointeurs) de la visualisation de cette dernière(ce qu'on a fait jusqu'à présent) 
+	Maintenant que je comprends mieux comment la sortie est visualisée, il est impératif de différencier la logique du jeu (tableaux et pointeurs) de la visualisation de cette dernière(ce qu'on a fait jusqu'à présent) 
 
-Il faut à présent réfléchir à une meilleure façon de mettre en logique notre jeu. Evitant les collisions/chevauchements entre voitures et les sorties de piste.
+	Il faut à présent réfléchir à une meilleure façon de mettre en logique notre jeu. Evitant les collisions/chevauchements entre voitures et les sorties de piste.
 
 
 ====::RESTRUCTURATION DE CODE::==== (26/12/2025) au (27/12/2025)
 
-Une structure englobant l'ensemble des vehicules, qui appelle une autre structure qui définit les véhicules présents (taille, couleur, position, direction...etc).
+	Une structure englobant l'ensemble des vehicules, qui appelle une autre structure qui définit les véhicules présents (taille, couleur, position, direction...etc).
 
-Petit test sur les tailles en mémoire. 
-J'obtiens :
+	Petit test sur les tailles en mémoire. 
+	J'obtiens :
 
-sizeof(Vehicule)  = 24 bytes 
-				{05 entiers et un char -- 5*4 + 1 -- or j'ai padding sur le char}
-sizeof(Game)= 248 bytes 
-				{n vehicules + 02 entiers -- 24 * MAX_VEHICULES + 8}
+	sizeof(Vehicule)  = 24 bytes 
+					{05 entiers et un char -- 5*4 + 1 -- or j'ai padding sur le char}
+	sizeof(Game)= 248 bytes 
+					{10 vehicules + 02 entiers -- 24 * MAX_VEHICULES + 8}
 
-Pareil en deplaçant le char à la fin <=> padding dépendant du max_bytes des éléments de ma struct.
+	Pareil en deplaçant le char à la fin <=> padding dépendant du max_bytes des éléments de ma struct.
 
-|-> Voir possibles optimisations de memory allocation (si jeu sur un sys embarqué {Pi 5...etc}, mais pour l'instant compte tenu du cahier des charges non limité. On passe àla suite :
+	|-> Voir possibles optimisations de memory allocation (si jeu sur un sys embarqué {Pi 5...etc}, mais pour l'instant compte tenu du cahier des charges non limité. On passe àla suite :
 
 
 ====::LOGIQUE DE LA GRILLE::====
 
-Une unique fonction build_grid() suffit.
-Je propose de mettre en paramètres :
--- un tableau 2D représentant notre grille ([GRID_SIZE][GRID_SIZE])
--- un pointeur vers la structure Game (Game *s) qui nous sera utile pour accéder et modifier la struct originale sans pour autant copier tous les éléments. 
+	Une unique fonction build_grid() suffit.
+	
+	Je propose de mettre en paramètres :
+	-- un tableau 2D représentant notre grille ([GRID_SIZE][GRID_SIZE])
+	-- un pointeur vers la structure Game (Game *s) qui nous sera utile pour accéder et modifier la struct originale sans pour autant copier tous les éléments. 
 
-On a également besoin de variables pour pouvoir accéder aux données (points de la grille, points d'une voiture)
+	On a également besoin de variables pour pouvoir accéder aux données (points de la grille, points d'une voiture)
 
--- Principe:
-On doit POUR POUVOIR REMPLIR LA GRILLE :
+	-- Principe:
+	On doit POUR POUVOIR REMPLIR LA GRILLE :
 
-->	itérer sur chaque vehicule (id : index),
-->	itérer sur chaque case d'un vehicule en fonction de sa taille ET direction,
-->	itérer sur les points de la grille (2D tab).
+	->	itérer sur chaque vehicule (id : index),
+	->	itérer sur chaque case d'un vehicule en fonction de sa taille ET direction,
+	->	itérer sur les points de la grille (2D tab).
 
 
---> Commençons par initialiser notre grille à -1,
-	(-1) indique que l'espace est vide.
-	Toutes les autres valeurs (non-négatives) indiquent donc présence d'une voiture (son id)
+	--> Commençons par initialiser notre grille à -1,
+		(-1) indique que l'espace est vide.
+		Toutes les autres valeurs (non-négatives) indiquent donc présence d'une voiture (son id)
 
-|-> Grille vide initialisée, Ajouter des véhicules maintenant.
+	|-> Grille vide initialisée, Ajouter des véhicules maintenant.
 
---> Utiliser un pointeur sur vehicules.
-	Permet d'accéder au vehicule courant sans passer par l'ensemble des éléments du tableau-struct Cars. (le pointeur pointe sur le véhicule actuel)
+	--> Utiliser un pointeur sur vehicules.
+		Permet d'accéder au vehicule courant sans passer par l'ensemble des éléments du tableau-struct Cars. (le pointeur pointe sur le véhicule actuel)
 
-++ Ne pas oublier mise à l'echelle des voitures. Si on prend facteur multiplicatif (zoom x3), 
-	grille 6x6 (que je juge trop petite)
-	|-> grille 18x18 :: -> modifier la visualisation sur le terminal. 
+	++ Ne pas oublier mise à l'echelle des voitures. Si on prend facteur multiplicatif (zoom x3), 
+		grille 6x6 (que je juge trop petite)
+		|-> grille 6x6 :: -> modifier la visualisation sur le terminal. {On ne multiplie pas la grille mais uniquement le rendu (03/01/2025)}
  
-Cela dépend de la direction de chaque véhicule. i.e:
-[**] devient 	[***][***]
-	     [***][***]
-	     [***][***]
+	Cela dépend de la direction de chaque véhicule. i.e:
+			[**] 
+		devient 
+			[***][***]
+			[***][***]
+			[***][***]
 
-Si horizontal : longueur multipliée par facteur
-Si vertical : hauteur multipliée par facteur
+	Si horizontal : longueur multipliée par facteur
+	Si vertical : hauteur multipliée par facteur
 
-|-> Mise a l'echelle effectuée
+	|-> Mise a l'echelle effectuée
 
-Maintenant associer chaque position sur la grille à l'id de la voiture.
---> simple double loop avec incrementation x+dx, y+dy 
+	Maintenant associer chaque position sur la grille à l'id de la voiture.
+	--> simple double loop avec incrementation x+dx, y+dy 
 
-Objectif réalisé.
+	Objectif réalisé.
 
 
-====::RENDERING::==== (27/12/2025) au (28/12/2025)
+	====::RENDERING::==== (27/12/2025) au (28/12/2025)
 
--- Simple modification du type de la fnction draw_grid afin qu'elle soit void, indiquer GRID_SIZE sur les define.
+	-- Simple modification du type de la fnction draw_grid afin qu'elle soit void, indiquer GRID_SIZE sur les define.
 
-J'ai compris que les codes couleurs ne sont autres que ceux de l'ANSI (AMERICAN NATIONAL STANDARDS INSTITUTE) donc j'ai ajouté les codes usuels à mes define. 
+	J'ai compris que les codes couleurs ne sont autres que ceux de l'ANSI (AMERICAN NATIONAL STANDARDS INSTITUTE) donc j'ai ajouté les codes usuels à mes define. 
 
--- Implémentation de draw_car(Vehicule *v) pour tracer les véhicules.
---+ pointe sur le vehicule actuel
---+ se place a la position top-left de chaque véhicule 
---+ modifie la couleur de fond sur chaque point du véhicule. 
+	-- Implémentation de draw_car(Vehicule *v) pour tracer les véhicules.
+	--+ pointe sur le vehicule actuel
+	--+ se place a la position top-left de chaque véhicule 
+	--+ modifie la couleur de fond sur chaque point du véhicule. 
 
--- Test n°1, °2 n'ont pas abouti car mauvais positionnement.
---> Passer par des variables pour éviter de s'emmeler les pinceaux. Car on se perd très vite.
+	-- Test n°1, °2 n'ont pas abouti car mauvais positionnement.
+	--> Passer par des variables pour éviter de s'emmeler les pinceaux. Car on se perd très vite.
 
--- Au 3e test, j'arrive enfin à bien visualiser mon tableau 2D composé de 4 véhicules et des espaces vides sur le terminal, avec les couleurs bien positionnées dans ma grille. 
+	-- Au 3e test, j'arrive enfin à bien visualiser mon tableau 2D composé de 4 véhicules et des espaces vides sur le terminal, avec les couleurs bien positionnées dans ma grille. 
 
-|-> Le plus dur est fait. Tests de demain :=> modifier le tableau et visualiser sur le terminal (principe du mouvement des véhicules).
+	|-> Le plus dur est fait. Tests de demain :=> modifier le tableau et visualiser sur le terminal (principe du mouvement des véhicules).
 
 
 ====::MOUVEMENT DES VEHICULES::==== (28/12/2025) au (29/12/2025)
 
-On passe maintenant au mouvement d'un véhicule. La logique est simple:
+	On passe maintenant au mouvement d'un véhicule. La logique est simple:
 
-++ On séléctionne un véhicule et en fonction de sa direction, on le fait bouger. Vertical/Horizontal --> on ajoute un membre {dy}, {dx} à sa position initiale (accessible depuis la structure de jeu Game, passée en pointeur pour ne pas copier tout etuniquement modifier ce dont on a besoin).
+	++ On séléctionne un véhicule et en fonction de sa direction, on le fait bouger. Vertical/Horizontal --> on ajoute un membre {dy}, {dx} à sa position initiale (accessible depuis la structure de jeu Game, passée en pointeur pour ne pas copier tout etuniquement modifier ce dont on a besoin).
 
--- Fonction de base :
-move_vehicule(Game *s, int id, int dx, int dy)	
-		s->vehicles[id].x += dx; 
-		s->vehicles[id].y += dy;
+	-- Fonction de base :
+		move_vehicule(Game *s, int id, int dx, int dy)	
+			s->vehicles[id].x += dx; 
+			s->vehicles[id].y += dy;
 
--- Observation :
-La fonction autorise le mouvement hors de la grille, le mouvement interdit (contraire à la direction) et le chevauchement inter-vehicule.
+	-- Observation :
+		La fonction autorise le mouvement hors de la grille, le mouvement interdit (contraire à la direction) et le chevauchement inter-vehicule.
 
-|-> Ajouter les contraintes sur la direction, car ma fonction actuelle laisse un véhicule horizontal bouger en verticale.
-|-> Ajouter les contraintes sur la sortie de grille des véhicules et le chevauchement entre véhicules. 
+	|-> Ajouter les contraintes sur la direction, car ma fonction actuelle laisse un véhicule horizontal bouger en verticale.
+	|-> Ajouter les contraintes sur la sortie de grille des véhicules et le chevauchement entre véhicules. 
 
-Donc réfléchir à une fonction qui dit si le movement d'un véhicule est legal?
-Definition d'une fonction secondaire à call dans la fonction de mouvement. 
-can_move(Game *s, int id, int dx, int dy)
-qui traite les contraintes citées auparavant.
+	Donc réfléchir à une fonction qui dit si le movement d'un véhicule est legal?
+	
+	Definition d'une fonction secondaire à call dans la fonction de mouvement. 
+		can_move(Game *s, int id, int dx, int dy)
+	qui traite les contraintes citées auparavant.
 
 ====::VERIFICATION DE LA LEGALITE DES MOUVEMENTS::==== (29/12/2025) au (02/01/2026)
 
-Faire appel à une fonction secondaire qui puisse indiquer si le mouvement est permis (si les contraintes ci-dessus sont respectees)
+	Faire appel à une fonction secondaire qui puisse indiquer si le mouvement est permis (si les contraintes ci-dessus sont respectees)
 
--- Fonction :
-can_move(Game *s, int id, int dx, int dy)
+	-- Fonction :
+		can_move(Game *s, int id, int dx, int dy)
 
-Cette fonction est utile car elle autorise le mouvement uniquement s'il est valide. 
-On separe donc le mouvement en deux etapes distinctes : 
--- validation/check :: can_move
--- mouvement :: move_vehicule
+	Cette fonction est utile car elle autorise le mouvement uniquement s'il est valide. 
+
+	On separe donc le mouvement en deux etapes distinctes : 
+	-- validation/check :: can_move
+	-- mouvement :: move_vehicule
 
 ====::TESTS ET DEBUG::====
 
-On re-edit les fonctions pour prendre en compte :
+	On re-edit les fonctions pour prendre en compte :
 
--- La selection cyclique des id de véhicules de 0 à n-1. (modulo)
-  |-> Ajout des inputs de selection (UpArrow et DownArrow) pour naviguer les id de vehicules
+	-- La selection cyclique des id de véhicules de 0 à n-1. (modulo)
+  	|-> Ajout des inputs de selection (UpArrow et DownArrow) pour naviguer les id de vehicules
 
--- Le mouvement des véhicules input-dependant ('h', 'j', 'k', 'l')
+	-- Le mouvement des véhicules input-dependant ('h', 'j', 'k', 'l')
 
--- Le quit avec 'q'
+	-- Le quit avec 'q'
 
 ====::WINNING::=====
 
-Logique de victoire : le top-right point du vehicule rouge touche la sortie
-Appel à une fonction qui verifie cela
+	Logique de victoire : le top-right point du vehicule rouge touche la sortie
+	Appel à une fonction qui verifie cela
 
 -- Fonction : 
 	check_win(Game *s)
@@ -197,34 +209,35 @@ Appel à une fonction qui verifie cela
 
 	initaliser dans la boucle main un int win a 0, et le faire modifier en fonction de check_win
 
-Aussi, Ajouter un ecran de victoire pour indiquer au user qu'il a gagne.
+	Aussi, Ajouter un ecran de victoire pour indiquer au user qu'il a gagne.
 
 -- Simple utilisation des fonctions presentes dans console.c 
 
 ====::ETAT ACTUEL::==== (03/01/2026) {J-2}
 
--- Grid fonctionelle
--- Rendering (UI) valide mais voir meilleur {hints, nb moves, valid inputs, car viewing (associer id et couleurs)}
--- Mouvement ssi legalite 
+	-- Grid fonctionelle
+	-- Rendering (UI) valide mais voir meilleur {hints, nb moves, valid inputs, car viewing (associer id et couleurs)}
+	-- Mouvement ssi legalite 
 
-++ A ajouter ++
-+++ Better UI {FAIT le 03/01/2026}
-+++ win condition {FAIT le 04/01/2026}
-+++ level selection {A faire}
-+++ paufinnage du code (Doxygen + commentaires)
+	++ A ajouter ++
+	+++ Better UI {FAIT le 03/01/2026}
+	+++ win condition {FAIT le 04/01/2026}
+	+++ level selection {A faire}
+	+++ paufinnage du code (Doxygen + commentaires) {FAIT le 04/01/2026}
 
-En date du 04/01/2026 
--- Better UX,
+	En date du 04/01/2026 
+	-- Better UX,
 
-Separation des fonctions d'appel à l'aide et d'affichage HUD : 
-show_controls(), draw_HUD(Game *s) 
+	Separation des fonctions d'appel à l'aide et d'affichage HUD : 
+		show_controls(), draw_HUD(Game *s) 
 
-draw_HUD initial affichait uniquement l'index des voitures, je l'ai modifie pour afficher aussi la couleur des voitures (esthetique uniquement mais bien meilleur selon moi). 
-Pour cela j'ai fait appel a une lookup table implementee avec switch case, elle me permet de retrouver les codes couleurs depuis n'importe quel entier d'ANSI couleur/fond. 
-Meilleure que mon ancienne implementation du code couleur avec les define en debut de code. 
-De plus, d'apres ce que j'ai appris cette structure n'enregistre rien en mémoire contrairement aux maps. 
+		draw_HUD initial affichait uniquement l'index des voitures, je l'ai modifie pour afficher aussi la couleur des voitures (esthetique uniquement mais bien meilleur selon moi). 
 
--- Ajout d'une fonction win_screen() qui s'affiche quand le user a gagne.
--- Reverification des changements render/logique. (nottament multiplication lors du zoom. Ne pas zoomer les valeurs logiques, zoomer le render uniquement :: sinon voir des erreurs memoire / segfault) car ma logique ne prend pas en compte de grandes valeurs i.e n elements au lieu d'un seul attendu itialement pour un zoom facteur n). En d'autres termes un tableau 6 ne peut pas contenir 18 valeurs. Donc uniquement lire les valeurs du tableau et les multiplier par n au rendering au lieu de generer un tableau m*n.
+	Pour cela j'ai fait appel a une lookup table implementee avec switch case, elle me permet de retrouver les codes couleurs depuis n'importe quel entier d'ANSI couleur/fond. 
+	Meilleure que mon ancienne implementation du code couleur avec les define en debut de code. 
+	De plus, d'apres ce que j'ai appris cette structure n'enregistre rien en mémoire contrairement aux maps. 
 
--- Ne pas oublier doxygen et commentaires
+	-- Ajout d'une fonction win_screen() qui s'affiche quand le user a gagne.
+	-- Reverification des changements render/logique. (nottament multiplication lors du zoom. Ne pas zoomer les valeurs logiques, zoomer le render uniquement :: sinon voir des erreurs memoire / segfault) car ma logique ne prend pas en compte de grandes valeurs i.e n elements au lieu d'un seul attendu itialement pour un zoom facteur n). En d'autres termes un tableau 6 ne peut pas contenir 18 valeurs. Donc uniquement lire les valeurs du tableau et les multiplier par n au rendering au lieu de generer un tableau m*n.
+
+	-- Ne pas oublier doxygen et commentaires {FAIT}
