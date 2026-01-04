@@ -1,7 +1,7 @@
-# TrafficJam
+# trafficjam
 
 **Author:** Rayan BEN  
-**Project:** PoPs_TrafficJam  
+**Project:** PoPs_trafficjam  
 **Date:** Dec 2025 - Jan 2026  
 
 A terminal-based 6x6 sliding puzzle game inspired by "Rush Hour", written in C.  
