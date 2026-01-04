@@ -14,8 +14,8 @@ Bonjour,
 === Etape 1 : (11/12/2025) 
 	- Affichage du plateau vide.
 	
-	fonction :  generategrid(gridl, gridh) 02 entiers égaux? autant utiliser un seul paramètre.
-		|-> augmenter gridl dans les niveaux plus durs? (idée)
+	fonction :  generategrid(gridl, gridh) 02 entiers égaux? autant utiliser un seul paramètre. La grille est forcement carré donc 1 seule var : GRID_SIZE
+		    
 	
 	++ test1 effectué, simple génération de grille à l'aide d'une for loop.
 	   questionnement, si ce ne serait pas plus judicieux pour la suite de passer directement par un tableau 2D.
@@ -26,7 +26,7 @@ i
 	++ finalement j'ai opté pour une struct point(x,y) pour faciliter la determiantion des emplacements, tout en respectant l'utilisation de allerxy(). (modification de code) 
 
 	Le code fonctionne parfaitement, l'output obtenue est celle attendue
-->  [ fenetre de jeu (18x18)  centrée avec possibilité de quitter le terminal en appuyant sur q ]
+->  [ fenetre de jeu (18x18) centrée avec possibilité de quitter le terminal en appuyant sur q ]
 	{A modifier}  : recuperer le 'q' sans echo. {FAIT}
 	
 	FINAL.
