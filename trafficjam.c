@@ -5,7 +5,7 @@
 
 /**
  * @author : Rayan BEN,
- * Projet PoPs_trafficjam
+ * Projet PoPs_trafficjam  --c90
  * Dec 2025 - Jan 2026
  */
 
@@ -18,7 +18,6 @@
 #define GRID_ORIGIN_X 32	
 #define GRID_ORIGIN_Y 15			/* grille <=> repere orthonormé vers la droite et le bas */
 
-
 typedef struct {
 	int id; 				/* referencer les vehicules de la grille */
 	int x, y; 				/* top-left point vehicule */
@@ -27,7 +26,6 @@ typedef struct {
 	int color; 				/* differencier les voitures coté UX */
 }Vehicule;
 
-
 typedef struct{
 	Vehicule Cars[MAX_VEHICULES]; 		/* vehicules de la grille */ 
 	int count; 		     		/* nb vehicules actifs */
@@ -35,7 +33,6 @@ typedef struct{
 	int moves;				/* nb  moves in a game */
 	int HELP;				/* bool d'affichage d'aide (UX) */
 }Game;
-
 
 /**
  * @fonction : Retourne le nom lisible d'une couleur ANSI à partir de son code.
@@ -168,9 +165,7 @@ Game init_game(void)
 	s.Cars[0].length = 2;
 	s.Cars[0].color = 31;
 
-
-
-    	/* Vertical Cars */
+	/* Vertical Cars */
     	s.Cars[1].id =1;
     	s.Cars[1].x = 3;
     	s.Cars[1].y = 0;
@@ -202,7 +197,6 @@ Game init_game(void)
 
     	return s;
 }
-
 
 /* ==================================================== RENDERING ============================================================ */
 
@@ -287,7 +281,6 @@ void draw_exit(void)
         	for (j = 0; j < CELL; j++) 					/* itération sur les columns (colonnes) */
             		printf(" ");						/* VISUELLEMENT trace l'ouverture de sortie */
     	}
-
 }
 
 /**
@@ -369,7 +362,6 @@ void draw_HUD(Game *s)
 	/* Affiche le texte pour indiquer comment afficher l'aide */
 	allerxy(1, y + 2);
 	printf("Press Shift + H for controls");						/* affiche txt help */
-
 }
 
 /**
@@ -470,8 +462,7 @@ void render(Game *s)
 	
 	draw_HUD(s);						/* affiche le HUD */
 
-	if(s->HELP) draw_controls();				/* affiche les controls si activated */
-    	
+	if(s->HELP) draw_controls();				/* affiche les controls si activated */  	
 }
 
 /* ====================================== MOVEMENT =============================================== */
@@ -548,7 +539,6 @@ void move_vehicule(Game *s, int id, int dx, int dy)
 		s->Cars[id].y += dy;
 		s->moves += 1;								/* incremente le cpt moves de la partie */
 	}
-
 }
 
 /* ================================================ INPUT ================================================ */
@@ -606,7 +596,6 @@ int main(void)
 			win_screen(&game);						/* affiche le win screen */
 			break;								/* sort de la boucle principale */
 		}
-
 		int key = read_key();							/* lit l'input du joueur en traitant les sequences */
        
 		if(key == 'q') break;							/* quitter le jeu */
@@ -633,7 +622,6 @@ int main(void)
         	else if (key == 'j')
             		move_vehicule(&game, game.selected, 0, 1);			/* 'j' up */
       	}
-
 	resetterminal();
     	active_curseur();
 	return 0;
