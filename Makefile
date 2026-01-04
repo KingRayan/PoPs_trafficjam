@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c90
+CFLAGS = -Wall -Wextra -std=c99
 
 OBJ = console.o trafficjam.o
 TARGET = trafficjam
