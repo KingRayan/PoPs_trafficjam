@@ -118,6 +118,7 @@ Objectif réalisé.
 
 
 ====::RENDERING::==== (27/12/2025) au (28/12/2025)
+
 -- Simple modification du type de la fnction draw_grid afin qu'elle soit void, indiquer GRID_SIZE sur les define.
 
 J'ai compris que les codes couleurs ne sont autres que ceux de l'ANSI (AMERICAN NATIONAL STANDARDS INSTITUTE) donc j'ai ajouté les codes usuels à mes define. 
@@ -136,6 +137,7 @@ J'ai compris que les codes couleurs ne sont autres que ceux de l'ANSI (AMERICAN 
 
 
 ====::MOUVEMENT DES VEHICULES::==== (28/12/2025) au (29/12/2025)
+
 On passe maintenant au mouvement d'un véhicule. La logique est simple:
 
 ++ On séléctionne un véhicule et en fonction de sa direction, on le fait bouger. Vertical/Horizontal --> on ajoute un membre {dy}, {dx} à sa position initiale (accessible depuis la structure de jeu Game, passée en pointeur pour ne pas copier tout etuniquement modifier ce dont on a besoin).
@@ -156,7 +158,8 @@ Definition d'une fonction secondaire à call dans la fonction de mouvement.
 can_move(Game *s, int id, int dx, int dy)
 qui traite les contraintes citées auparavant.
 
-====::VERIFICATION DE LA LEGALITE DES MOUVEMENTS::====
+====::VERIFICATION DE LA LEGALITE DES MOUVEMENTS::==== (29/12/2025) au (02/01/2026)
+
 Faire appel à une fonction secondaire qui puisse indiquer si le mouvement est permis (si les contraintes ci-dessus sont respectees)
 
 -- Fonction :
@@ -168,6 +171,7 @@ On separe donc le mouvement en deux etapes distinctes :
 -- mouvement :: move_vehicule
 
 ====::TESTS ET DEBUG::====
+
 On re-edit les fonctions pour prendre en compte :
 
 -- La selection cyclique des id de véhicules de 0 à n-1. (modulo)
@@ -177,7 +181,28 @@ On re-edit les fonctions pour prendre en compte :
 
 -- Le quit avec 'q'
 
-====::ETAT ACTUEL::====
+====::WINNING::=====
+
+Logique de victoire : le top-right point du vehicule rouge touche la sortie
+Appel à une fonction qui verifie cela
+
+-- Fonction : 
+	check_win(Game *s)
+
+		declarer pointeur *red et le faire pointer sur l'adresse de Cars[0] car 0 est l'indice de notre vehicule rouge
+ 
+		red->x est notre top-left point
+		red->length taille du vehicule mais ne pas oublier facteur zoom donc multiplier par CELL
+	retorune 1 ssi red->x + red->length * CELL == GRID_SIZE
+
+	initaliser dans la boucle main un int win a 0, et le faire modifier en fonction de check_win
+
+Aussi, Ajouter un ecran de victoire pour indiquer au user qu'il a gagne.
+
+-- Simple utilisation des fonctions presentes dans console.c 
+
+====::ETAT ACTUEL::==== (03/01/2025) {J-2}
+
 -- Grid fonctionelle
 -- Rendering (UI) valide mais voir meilleur {hints, nb moves, valid inputs, car viewing (associer id et couleurs)}
 -- Mouvement ssi legalite 
@@ -187,6 +212,17 @@ On re-edit les fonctions pour prendre en compte :
 +++ win condition
 +++ level selection
 +++ paufinnage du code (Doxygen + commentaires)
+
+En date du 04/01/2026 
+-- Better UX,
+
+Separation des fonctions d'appel à l'aide et d'affichage HUD : 
+show_controls(), draw_HUD(Game *s) 
+
+draw_HUD initial affichait uniquement l'index des voitures, je l'ai modifie pour afficher aussi la couleur des voitures (esthetique uniquement mais bien meilleur selon moi). 
+Pour cela j'ai fait appel a une lookup table implementee avec switch case, elle me permet de retrouver les codes couleurs depuis n'importe quel entier d'ANSI couleur/fond. 
+Meilleure que mon ancienne implementation du code couleur avec les define en debut de code. 
+De plus, d'apres ce que j'ai appris cette structure n'enregistre rien en mémoire contrairement aux maps. 
 
 
 
