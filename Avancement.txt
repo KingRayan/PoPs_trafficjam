@@ -68,13 +68,11 @@ Convention utilisee :
 - [✓] Separer Logique et Display dans notre jeu (faciliter le game design)
 - [!] Remarque : Utile pour detecter les collisions, sinon on aura chevauchement de voitures en display voire carrément voitures sortant de la grille.
 
-
 ===================== Etapes suivantes 
 
 - [!] Remarque : Maintenant que je comprends mieux comment la sortie est visualisée, il est impératif de différencier la logique du jeu (tableaux et pointeurs) de la visualisation de cette dernière(ce qu'on a fait jusqu'à présent) 
 
 - [→] Il faut à présent réfléchir à une meilleure façon de mettre en logique notre jeu. Evitant les collisions/chevauchements entre voitures et les sorties de piste.
-
 
 ===================== RESTRUCTURATION DE CODE : (26/12/2025) au (27/12/2025)
 - Je n'ai plus acces aux etapes indiquees comme aide pour le projet, je fais donc au feeling, ce que je juge utile. Je risque sans doute d'oublier des elements cles du jeu, désolé.
@@ -111,7 +109,6 @@ Convention utilisee :
 - [→] itérer sur chaque case d'un vehicule en fonction de sa taille ET direction,
 - [→] itérer sur les points de la grille (2D tab).
 
-
 - PRINCIPE : 
 - [→] initialiser notre grille à -1,
 		(-1) indique que l'espace est vide.
@@ -146,7 +143,6 @@ Revision le (03/01/2026)
 - [✓] simple double loop avec incrementation gridx + dx, gridy + dy
 
 	Objectif réalisé.
-
 
 ===================== RENDERING : (27/12/2025) au (28/12/2025)
 
@@ -258,7 +254,6 @@ Revision le (03/01/2026)
 	- [→] level selection {A faire}
 	- [→] paufinnage du code (Doxygen + commentaires) {FAIT le 04/01/2026}	[✓]
 
-
 - 	En date du (04/01/2026) 
 
 - [✓] Better UX,
@@ -275,7 +270,6 @@ Revision le (03/01/2026)
 
 - [✓] Ajout d'une fonction win_screen() qui s'affiche quand le user a gagne.
 
-
 - [!] A retenir : 
 -	Ne pas zoomer les valeurs logiques, zoomer le render uniquement :: sinon voir des erreurs memoire / segfault) 
 	i.e : 
@@ -290,6 +284,11 @@ Revision le (03/01/2026)
 	Donc demande modification de code.
 
 - Le plus important : éviter d'oublier son sujet avec les étapes d'aides :LOL:
+
+
+
+
+
 
 
 
