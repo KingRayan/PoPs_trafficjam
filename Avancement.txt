@@ -3,8 +3,8 @@ FRENCH @ line 3 -- ENGLISH @ line 300 ;
 	>> [FRENCH], [FRANCAIS]
 ---------------------------
 Bonjour,
-	Bienvenue dans le fichier d'avancement du projet "traffic jam".
-	Ce dernier, est structuré par étapes du projet.
+Bienvenue dans le fichier d'avancement du projet "traffic jam".
+Ce dernier est structuré par étapes du projet.
 -----------------------------------------------------
 Convention utilisee : 
 - [✓] (implemented) / (validated)
