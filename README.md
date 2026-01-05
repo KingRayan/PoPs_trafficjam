@@ -40,12 +40,12 @@ Move the red car (ID 0) horizontally to the exit on the right side of the grid.
 ---
 
 ## Project Structure
-PoPs_trafficjam/
-│
-├── trafficjam.c # full game logic and rendering
-├── console.c # console utility functions (cursor, colors)
-├── Makefile # Build instructions
-├── README.md # Project description
+          PoPs_trafficjam/
+          │
+          ├── trafficjam.c # full game logic and rendering
+          ├── console.c # console utility functions (cursor, colors)
+          ├── Makefile # Build instructions
+          ├── README.md # Project description
 
 ---
 
@@ -66,12 +66,12 @@ PoPs_trafficjam/
 
 **C99 version:**
 ```bash
-gcc -std=c99 -Wall main.c -o trafficjam
+gcc -std=c99 -Wall trafficjam.c console.c -o trafficjam
 ./trafficjam
 ```
 **C99 version:**
 ```bash
-gcc -std=c90 -Wall main.c -o trafficjam
+gcc -std=c90 -Wall trafficjam.c console.c -o trafficjam
 ./trafficjam
 ```
 
