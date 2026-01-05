@@ -1,243 +1,579 @@
+FRENCH @ line 3 -- ENGLISH @ line 300 ; 
+---------------------------
+	>> [FRENCH], [FRANCAIS]
+---------------------------
 Bonjour,
 	Bienvenue dans le fichier d'avancement du projet "traffic jam".
 	Ce dernier, est structuré par étapes du projet.
+-----------------------------------------------------
+Convention utilisee : 
+- [✓] (implemented) / (validated)
+- [→] (en cours ...) / (in progress...)
+- [?] (reflexion || axes d'amelioration) / (thoughts || can be improved)
+- [!] (remarque importante) / (observation)
 
-=== Etape 0 : (11/12/2025) 
-	- Vérifier le bon fonctionnement de la bibliothèque console.h en compilant et testant le programme test.c;
+===================== Etape 0 : (11/12/2025) 
+- [✓] Vérifier le bon fonctionnement de la bibliothèque console.h en compilant et testant le programme test.c;
 	
-	++ bibliothèque testée, utilisation des fonctions *d'echo*, *couleur pour la police et le background*  ainsi que la possibilité de *renommer le terminal* et l'*effacer*. (utile pour notre jeu).
+- [✓] bibliothèque testée, utilisation des fonctions *d'echo*, *couleur pour la police et le background*  ainsi que la possibilité de *renommer le terminal* et l'*effacer*. (utile pour notre jeu).
 
-------> Note : Je ne comprenais pas vraiment l'utilité du stdoutbuffer, son activation et sa desactivation. Ce n'est qu'en me documentant bien plus tard, que j'ai compris son utilité cruciale. 
+- [!] Note : Je ne comprenais pas vraiment l'utilité du stdoutbuffer, son activation et sa desactivation. Ce n'est qu'en me documentant bien plus tard, que j'ai compris son utilité cruciale. 
 		En C la sortie est bufferisee : les printf (generalisable a tout stdout) ne s'affichent pas directement {stockage tampon}
 		Il est crucial pour l'electronicien que je compte devenir plus tard, d'apprendre ces notions importantes; surtout dans le domaine des technologies à temps critique, i.e avion, fusée, santé etc...
  
-=== Etape 1 : (11/12/2025) 
-	- Affichage du plateau vide.
+===================== Etape 1 : (11/12/2025) au (11/12/2025)
+- OBJECTIF : Affichage du plateau vide.
 	
-	fonction :  generategrid(gridl, gridh) 02 entiers égaux? autant utiliser un seul paramètre. La grille est forcement carré donc 1 seule var : GRID_SIZE
-		    
+- [✓] FONCTION :  generategrid(gridl, gridh) 02 entiers égaux? autant utiliser un seul paramètre. La grille est forcement carré donc 1 seule var : GRID_SIZE
+    
+- [✓] test1 effectué, simple génération de grille à l'aide d'une for loop.
+- [?] Reflexion : Si ce ne serait pas plus judicieux pour la suite de passer directement par un tableau 2D.
 	
-	++ test1 effectué, simple génération de grille à l'aide d'une for loop.
-	   questionnement, si ce ne serait pas plus judicieux pour la suite de passer directement par un tableau 2D.
+- [✓] test2 effectué, ajout de l'option quitter (q) qui reset le terminal.
+- [→] Je cherche maintenant à générer la fentre de jeu au milieu du terminal : Pour l'instant elle est à gauche car je n'ai utilisé que des printf et un for loop. 
+- [→] Je cherche à utiliser les fonctions de console.c tq : allerxy() qui m'aideront.
+
+- [✓] finalement j'ai opté pour une struct point(x,y) pour faciliter la determiantion des emplacements, tout en respectant l'utilisation de allerxy(). (modification de code) 
+
+	 - Le code fonctionne parfaitement, l'output obtenue est celle attendue
+[✓]  - Fenetre de jeu (18x18) centrée avec possibilité de quitter le terminal en appuyant sur 'q' 
+	 {→}  : cin le 'q' sans echo. {FAIT}
+
+===================== Etape 2 : (11/12/2025) au (11/12/2025)
+-  OBJECTIF : Affichage de la voiture rouge dans le plateau
+
+- [✓] FONCTION : generateMainCar(Point, hv) un point et un entier (horizontale si 0, vertical si 1) 
+- [!] Remarque : Bien mais int > char en espace mémoire donc directement utiliser h, v en char.
+
+- [✓] FONCTION : generateMainCar(Point, hv) un point et un char ('h'/'v')
+- [→] Ajouter des params pour généraliser la fonction à toutes les voitures. (i.e : couleur, car_id)
 	
-	++ test2  avec ajout de l'option quitter (q) qui reset le terminal.
-	++ je cherche maintenant à générer la fentre de jeu au milieu du terminal. car pour l'instant elle est à gauche car je n'ai utilisé que des printf et un for loop. Je cherche à utiliser les fonctions de console.c tq : allerxy() qui m'aideront.
-i
-	++ finalement j'ai opté pour une struct point(x,y) pour faciliter la determiantion des emplacements, tout en respectant l'utilisation de allerxy(). (modification de code) 
-
-	Le code fonctionne parfaitement, l'output obtenue est celle attendue
-->  [ fenetre de jeu (18x18) centrée avec possibilité de quitter le terminal en appuyant sur q ]
-	{A modifier}  : recuperer le 'q' sans echo. {FAIT}
+- [✓] test1 effectué, j'ai pu afficher une voiture sous forme de "*" rouges à l'intérieur de ma grille de jeu. Mais je trouve les "*" pas très visibles. J'essaye de faire afficher un rectangle complet. 
 	
-	FINAL.
+- [✓] test2, après avoir initié le caractère à afficher "█" et le text color à rouge. j'obtiens bien un rectangle rouge. C'est déja mieux pour la visualisation. 
+- [→] Je réfléchis sérieusement à la capacité d'intégrer d'autres variables afin de généraliser cette fonction à toutes les voitures
 
-=== Etape 2 : (11/12/2025) au (12/12/2025)
-	- Affichage de la voiture rouge dans le plateau
-	fonction : generateMainCar(Point, hv) un point et un entier (horizontale si 0, vertical si 1) Bien mais int > char en espace mémoire donc directement utiliser H, V en char.
-	fonction : generateMainCar(Point, hv) un point et un char ('H'/'V')
-	|-> rajouter des inputs pour généraliser la fonction à toutes les voitures. (i.e : couleur, car_id)
+- [→] Reflechir à la suite, initier un tableau 2D représentant mes cases de jeu, avec les id de voitures remplis dedans. 
+- [?] (tab uint8) -- librairie constrainte
+- [→] Utiliser un tab de pointeurs par la suite pour (manipuler la mémoire) //  éviter les collisions entre voitures 
+- [→] Définir directement struct Vehicule{Point, tailler, direction} ? 
+
+- [!] Remarque : Ici on commence deja à separer la logique du rendu.  
 	
-	++ test1 effectué, j'ai pu afficher une voiture sous forme de "*" rouges à l'intérieur de ma grille de jeu. Mais je trouve les "*" pas très visibles. J'essaye de faire afficher un rectangle complet. 
-	
-	++ test2, après avoir initié le caractère à afficher " " et le background_color à rouge. j'obtiens bien un rectangle rouge. C'est déja mieux pour la visualisation. 
-	Je réfléchis sérieusement à la capacité d'intégrer d'autres variables afin de généraliser cette fonction à toutes les voitures
+===================== Etape 3 : (12/12/2025) au (17/12/2025)
+- OBJECTIF : Faire bouger une voiture.
 
-	|-> reflechir à la suite, initier un tableau 2D représentant mes cases de jeu, avec les id de voitures remplis dedans. (tab uint8) ? 
-	|-> utiliser un tab de pointeurs par la suite pour (manipuler la mémoire) //  éviter les collisions entre voitures ?
-	|-> définir directement struct Vehicule{Point, tailler, direction} ? 
-
-------> Remarque : Ici on commence deja à separer la logique du rendu.  
-	
-=== Etape 3 : (12/12/2025) au (17/12/2025)
-	- Faire bouger une voiture. Pas très compliqué en display uniquement. 
-	|-> Trouver la logique pour faire bouger les voitures (en interne // sans display) i.e tableaux, pointeurs etc...
-	++ Separer Logique et Display dans notre jeu (faciliter le game design)
-	|-> Surtout pour detecter les collisions, sinon on aura chevauchement de voitures en display voire carrément voitures sortant de la grille.
-
-====::Etapes suivantes::====
-
-	Maintenant que je comprends mieux comment la sortie est visualisée, il est impératif de différencier la logique du jeu (tableaux et pointeurs) de la visualisation de cette dernière(ce qu'on a fait jusqu'à présent) 
-
-	Il faut à présent réfléchir à une meilleure façon de mettre en logique notre jeu. Evitant les collisions/chevauchements entre voitures et les sorties de piste.
+- [✓] Pas très compliqué en display uniquement. 
+- [→] Trouver la logique pour faire bouger les voitures (en interne // sans display) i.e tableaux, pointeurs etc...
+- [✓] Separer Logique et Display dans notre jeu (faciliter le game design)
+- [!] Remarque : Utile pour detecter les collisions, sinon on aura chevauchement de voitures en display voire carrément voitures sortant de la grille.
 
 
-====::RESTRUCTURATION DE CODE::==== (26/12/2025) au (27/12/2025)
+===================== Etapes suivantes 
 
-	Une structure englobant l'ensemble des vehicules, qui appelle une autre structure qui définit les véhicules présents (taille, couleur, position, direction...etc).
+- [!] Remarque : Maintenant que je comprends mieux comment la sortie est visualisée, il est impératif de différencier la logique du jeu (tableaux et pointeurs) de la visualisation de cette dernière(ce qu'on a fait jusqu'à présent) 
 
-	Petit test sur les tailles en mémoire. 
-	J'obtiens :
-
-	sizeof(Vehicule)  = 24 bytes 
-					{05 entiers et un char -- 5*4 + 1 -- or j'ai padding sur le char}
-	sizeof(Game)= 248 bytes 
-					{10 vehicules + 02 entiers -- 24 * MAX_VEHICULES + 8}
-
-	Pareil en deplaçant le char à la fin <=> padding dépendant du max_bytes des éléments de ma struct.
-
-	|-> Voir possibles optimisations de memory allocation (si jeu sur un sys embarqué {Pi 5...etc}, mais pour l'instant compte tenu du cahier des charges non limité. On passe àla suite :
+- [→] Il faut à présent réfléchir à une meilleure façon de mettre en logique notre jeu. Evitant les collisions/chevauchements entre voitures et les sorties de piste.
 
 
-====::LOGIQUE DE LA GRILLE::====
+===================== RESTRUCTURATION DE CODE : (26/12/2025) au (27/12/2025)
+- Je n'ai plus acces aux etapes indiquees comme aide pour le projet, je fais donc au feeling, ce que je juge utile. Je risque sans doute d'oublier des elements cles du jeu, désolé.
 
-	Une unique fonction build_grid() suffit.
-	
-	Je propose de mettre en paramètres :
-	-- un tableau 2D représentant notre grille ([GRID_SIZE][GRID_SIZE])
-	-- un pointeur vers la structure Game (Game *s) qui nous sera utile pour accéder et modifier la struct originale sans pour autant copier tous les éléments. 
+- OBJECTIF : Continuer dans l'axe de developpement du jeu : separation logique/rendering, mouvement sans chevauchement ou sortie de grille.
 
-	On a également besoin de variables pour pouvoir accéder aux données (points de la grille, points d'une voiture)
+- [✓] LOGIQUE : [GRID] 		2D array avec des ID de vehicules en int.
+- [✓] LOGIQUE : [Vehicule]	struct Vehicule englobant l'ensemble des données d'un vehicule : ID, Couleur, Position (Point), direction, longueur.
+- [✓] LOGIQUE : [Game]		struct Game englobant l'ensemble des vehicules, leur nombre, l'id du vehicule courant/selected.
 
-	-- Principe:
-	On doit POUR POUVOIR REMPLIR LA GRILLE :
+- [✓] test memory : Petit test sur les tailles en mémoire. 
+		sizeof(Vehicule)  = 24 bytes 
+						{05 entiers et un char -- 5*4 + 1 -- or j'ai padding sur le char}
+		sizeof(Game)= 248 bytes 
+						{10 vehicules + 02 entiers -- 24 * MAX_VEHICULES + 8}
 
-	->	itérer sur chaque vehicule (id : index),
-	->	itérer sur chaque case d'un vehicule en fonction de sa taille ET direction,
-	->	itérer sur les points de la grille (2D tab).
+- [!] Remarque : Pareil en deplaçant le char à la fin 
+- [!] Conclusion : Padding dépendant du max_bytes des éléments de ma struct.
+
+- [→] Voir possibles optimisations de memory allocation (si jeu sur un sys embarqué {Pi 5...etc}, mais pour l'instant compte tenu du cahier des charges non limité. On passe àla suite :
+
+===================== LOGIQUE DE LA GRILLE : (26/12/2025) au (27/12/2025)
+
+- [✓] Une unique fonction build_grid() suffit.
+-		Je propose de mettre en paramètres :
+		[✓] 2D array représentant notre grille ([GRID_SIZE][GRID_SIZE])
+		[✓] pointeur vers la structure Game (Game *s) qui nous sera utile pour accéder et modifier la struct originale sans pour autant copier tous les éléments. 
+
+- [!] Remarque : On a également besoin de variables pour pouvoir accéder aux données (points de la grille, points d'une voiture)
+
+- NECESSITE :
+- [→] remplir la grille
+- [→] itérer sur chaque vehicule (id : index),
+- [→] itérer sur chaque case d'un vehicule en fonction de sa taille ET direction,
+- [→] itérer sur les points de la grille (2D tab).
 
 
-	--> Commençons par initialiser notre grille à -1,
+- PRINCIPE : 
+- [→] initialiser notre grille à -1,
 		(-1) indique que l'espace est vide.
 		Toutes les autres valeurs (non-négatives) indiquent donc présence d'une voiture (son id)
+- [✓] Grille vide initialisée, Ajouter des véhicules maintenant.
 
-	|-> Grille vide initialisée, Ajouter des véhicules maintenant.
+- [→] Utiliser un pointeur sur vehicules.
+		Permet d'accéder au vehicule courant sans passer par l'ensemble des éléments du tableau-struct Cars. 
+- [✓] Pointeur pointe sur le véhicule actuel
 
-	--> Utiliser un pointeur sur vehicules.
-		Permet d'accéder au vehicule courant sans passer par l'ensemble des éléments du tableau-struct Cars. (le pointeur pointe sur le véhicule actuel)
+- [→] Ne pas oublier mise à l'echelle des voitures. Si on prend facteur multiplicatif (zoom x3), 
+		grille 6x6 (que je juge trop petite) 
+- [!] Remarque : Ne pas modifier la grille de jeu, uniquement modifier le rendering. i.e au lieu d'imprimer un char, en imprimer 3.
 
-	++ Ne pas oublier mise à l'echelle des voitures. Si on prend facteur multiplicatif (zoom x3), 
-		grille 6x6 (que je juge trop petite)
-		|-> grille 6x6 :: -> modifier la visualisation sur le terminal. {On ne multiplie pas la grille mais uniquement le rendu (03/01/2025)}
+Revision le (03/01/2026)
+- [→] modifier la visualisation sur le terminal. On ne multiplie pas la grille mais uniquement le rendu (03/01/2025)
  
-	Cela dépend de la direction de chaque véhicule. i.e:
+- Cela dépend de la direction de chaque véhicule. i.e:
 			[**] 
 		devient 
 			[***][***]
 			[***][***]
 			[***][***]
 
-	Si horizontal : longueur multipliée par facteur
-	Si vertical : hauteur multipliée par facteur
+	- Si horizontal : longueur multipliée par facteur
+	- Si vertical : hauteur multipliée par facteur
 
-	|-> Mise a l'echelle effectuée
+- [✓] Mise a l'echelle effectuée:
+- Differencier (screenx, screeny) de (gridx, gridy) 
 
-	Maintenant associer chaque position sur la grille à l'id de la voiture.
-	--> simple double loop avec incrementation x+dx, y+dy 
+- [→] Maintenant associer chaque position sur la grille à l'id de la voiture.
+- [✓] simple double loop avec incrementation gridx + dx, gridy + dy
 
 	Objectif réalisé.
 
 
-	====::RENDERING::==== (27/12/2025) au (28/12/2025)
+===================== RENDERING : (27/12/2025) au (28/12/2025)
 
-	-- Simple modification du type de la fnction draw_grid afin qu'elle soit void, indiquer GRID_SIZE sur les define.
+- [✓] Simple modification du type de la fnction draw_grid afin qu'elle soit void, indiquer GRID_SIZE in define.
 
-	J'ai compris que les codes couleurs ne sont autres que ceux de l'ANSI (AMERICAN NATIONAL STANDARDS INSTITUTE) donc j'ai ajouté les codes usuels à mes define. 
+- [!] Remarque : J'ai compris que les codes couleurs ne sont autres que ceux de l'ANSI (AMERICAN NATIONAL STANDARDS INSTITUTE) 
+- [✓] Ajout des codes usuels in define
 
-	-- Implémentation de draw_car(Vehicule *v) pour tracer les véhicules.
-	--+ pointe sur le vehicule actuel
-	--+ se place a la position top-left de chaque véhicule 
-	--+ modifie la couleur de fond sur chaque point du véhicule. 
+- [✓] Implémentation de draw_car(Vehicule *v) pour tracer les véhicules.
+	- [✓] pointe sur le vehicule actuel
+	- [✓] se place a la position top-left de chaque véhicule 
+	- [✓] modifie la couleur de fond sur chaque point du véhicule. 
 
-	-- Test n°1, °2 n'ont pas abouti car mauvais positionnement.
-	--> Passer par des variables pour éviter de s'emmeler les pinceaux. Car on se perd très vite.
+- [✓] test1, test2 : non abouti car mauvais positionnement.
+- [→] Passer par des variables pour éviter de s'emmeler les pinceaux. Car on se perd très vite.
 
-	-- Au 3e test, j'arrive enfin à bien visualiser mon tableau 2D composé de 4 véhicules et des espaces vides sur le terminal, avec les couleurs bien positionnées dans ma grille. 
+- [✓] test3 : j'arrive enfin à bien visualiser mon tableau 2D composé de 4 véhicules et des espaces vides sur le terminal, avec les couleurs bien positionnées dans ma grille. 
 
-	|-> Le plus dur est fait. Tests de demain :=> modifier le tableau et visualiser sur le terminal (principe du mouvement des véhicules).
+- [!] Le plus dur est fait. 
 
+-	Tests de demain :=> modifier le tableau et visualiser sur le terminal (principe du mouvement des véhicules).
 
-====::MOUVEMENT DES VEHICULES::==== (28/12/2025) au (29/12/2025)
+===================== MOUVEMENT DES VEHICULES : (28/12/2025) au (29/12/2025)
 
-	On passe maintenant au mouvement d'un véhicule. La logique est simple:
+-	On passe maintenant au mouvement d'un véhicule. La logique est simple:
 
-	++ On séléctionne un véhicule et en fonction de sa direction, on le fait bouger. Vertical/Horizontal --> on ajoute un membre {dy}, {dx} à sa position initiale (accessible depuis la structure de jeu Game, passée en pointeur pour ne pas copier tout etuniquement modifier ce dont on a besoin).
+- PRINCIPE : On séléctionne un véhicule et en fonction de sa direction, on le fait bouger.
+			 Vertical/Horizontal --> on ajoute un membre {dy}, {dx} à sa position initiale 
+			(accessible depuis la structure de la partie Game, passée en pointeur pour ne pas copier tout et uniquement modifier ce dont on a besoin)
 
-	-- Fonction de base :
-		move_vehicule(Game *s, int id, int dx, int dy)	
-			s->vehicles[id].x += dx; 
-			s->vehicles[id].y += dy;
+- [✓] Fonction de base :
+		void move_vehicule(Game *s, int id, int dx, int dy)	
+			s->vehicules[id].x += dx; 
+			s->vehicules[id].y += dy;
+			(revision du 04/01/2026) Ajout d'un cpt moves et l'incrementer ici.
 
-	-- Observation :
-		La fonction autorise le mouvement hors de la grille, le mouvement interdit (contraire à la direction) et le chevauchement inter-vehicule.
+- [!] Observation :	La fonction autorise le mouvement hors de la grille, 
+					le mouvement interdit (contraire à la direction) et le chevauchement inter-vehicule.
 
-	|-> Ajouter les contraintes sur la direction, car ma fonction actuelle laisse un véhicule horizontal bouger en verticale.
-	|-> Ajouter les contraintes sur la sortie de grille des véhicules et le chevauchement entre véhicules. 
+- [→] Ajouter les contraintes sur la direction, car ma fonction actuelle laisse un véhicule horizontal bouger en verticale.
+- [→] Ajouter les contraintes sur la sortie de grille des véhicules et le chevauchement entre véhicules. 
 
-	Donc réfléchir à une fonction qui dit si le movement d'un véhicule est legal?
+- [→] Reflechir à une fonction qui dit si le movement d'un véhicule est authorisé/legal?
 	
-	Definition d'une fonction secondaire à call dans la fonction de mouvement. 
-		can_move(Game *s, int id, int dx, int dy)
-	qui traite les contraintes citées auparavant.
+- [✓] Fonction secondaire à call dans la fonction de mouvement. 
+		int can_move(Game *s, int id, int dx, int dy)
+			
+		traite les contraintes citées auparavant.
 
-====::VERIFICATION DE LA LEGALITE DES MOUVEMENTS::==== (29/12/2025) au (02/01/2026)
+===================== VERIFICATION DE LA LEGALITE DES MOUVEMENTS : (29/12/2025) au (02/01/2026)
 
-	Faire appel à une fonction secondaire qui puisse indiquer si le mouvement est permis (si les contraintes ci-dessus sont respectees)
+-- PRINCIPE : Faire appel à une fonction secondaire qui puisse indiquer si le mouvement est permis (si les contraintes ci-dessus sont respectees)
 
-	-- Fonction :
-		can_move(Game *s, int id, int dx, int dy)
+- [✓] Fonction :
+		int can_move(Game *s, int id, int dx, int dy)
 
-	Cette fonction est utile car elle autorise le mouvement uniquement s'il est valide. 
+		Cette fonction est utile car elle autorise le mouvement uniquement s'il est valide. 
 
-	On separe donc le mouvement en deux etapes distinctes : 
+- [→] On separe donc le mouvement en deux etapes distinctes : 
 	-- validation/check :: can_move
 	-- mouvement :: move_vehicule
 
-====::TESTS ET DEBUG::====
+===================== TESTS ET DEBUG : (29/12/2025) au (02/01/2026)
 
-	On re-edit les fonctions pour prendre en compte :
+-	Re-edition des fonctions pour prendre en compte :
 
-	-- La selection cyclique des id de véhicules de 0 à n-1. (modulo)
-  	|-> Ajout des inputs de selection (UpArrow et DownArrow) pour naviguer les id de vehicules
+	- [→] La selection cyclique des id de véhicules de 0 à n-1. (modulo)
+  	- [→] Ajout des inputs de selection (UpArrow et DownArrow) pour naviguer les id de vehicules
+	- [!] Remarque : Arrows = escape sequence 
+					Imperativement faire une fonction qui permet de lire les sequences.
+					i.e 27 [ A  
+						27 [ B
+	
+	- [→] Le mouvement des véhicules input-dependant ('h', 'j', 'k', 'l')
 
-	-- Le mouvement des véhicules input-dependant ('h', 'j', 'k', 'l')
+	- [→] Le quit avec 'q'
 
-	-- Le quit avec 'q'
+===================== WINNING : (02/01/2026) au (03/01/2026)
 
-====::WINNING::=====
+- PRINCIPE : Logique de victoire : le top-right point du vehicule rouge touche la sortie
+		[→] Appel à une fonction qui verifie cela
 
-	Logique de victoire : le top-right point du vehicule rouge touche la sortie
-	Appel à une fonction qui verifie cela
-
--- Fonction : 
-	check_win(Game *s)
+- [✓] Fonction : 
+	int check_win(Game *s)
 
 		declarer pointeur *red et le faire pointer sur l'adresse de Cars[0] car 0 est l'indice de notre vehicule rouge
  
-		red->x est notre top-left point
-		red->length taille du vehicule mais ne pas oublier facteur zoom donc multiplier par CELL
-	retorune 1 ssi red->x + red->length * CELL == GRID_SIZE
+		red->x 			top-left point.x
+		red->length 	taille du vehicule
 
-	initaliser dans la boucle main un int win a 0, et le faire modifier en fonction de check_win
+	- [✓] retorune 1 ssi red->x + red->length == GRID_SIZE
 
-	Aussi, Ajouter un ecran de victoire pour indiquer au user qu'il a gagne.
+- [✓] Appel de check_win dans main pour valider le niveau.
 
--- Simple utilisation des fonctions presentes dans console.c 
+- [→] Aussi, Ajouter un ecran de victoire pour indiquer au user qu'il a gagne.
+	- [→] Simple utilisation des fonctions presentes dans console.c 
 
-====::ETAT ACTUEL::==== (03/01/2026) {J-2}
+===================== ETAT ACTUEL: (03/01/2026) {J-2}
 
-	-- Grid fonctionelle
-	-- Rendering (UI) valide mais voir meilleur {hints, nb moves, valid inputs, car viewing (associer id et couleurs)}
-	-- Mouvement ssi legalite 
+- 	En date du (03/01/2026)
 
-	++ A ajouter ++
-	+++ Better UI {FAIT le 03/01/2026}
-	+++ win condition {FAIT le 04/01/2026}
-	+++ level selection {A faire}
-	+++ paufinnage du code (Doxygen + commentaires) {FAIT le 04/01/2026}
+- [✓] Grid fonctionelle
+- [✓] Rendering (UI) valide mais voir meilleur {hints, nb moves, valid inputs, car viewing (associer id et couleurs)}
+- [✓] Mouvement ssi legalite 
 
-	En date du 04/01/2026 
-	-- Better UX,
+- [→] A ajouter 
+	- [→] Better UI {FAIT le 03/01/2026} 									[✓]
+	- [→] win condition {FAIT le 04/01/2026} 								[✓]
+	- [→] level selection {A faire}
+	- [→] paufinnage du code (Doxygen + commentaires) {FAIT le 04/01/2026}	[✓]
 
-	Separation des fonctions d'appel à l'aide et d'affichage HUD : 
+
+- 	En date du (04/01/2026) 
+
+- [✓] Better UX,
+
+- [✓] Separation des fonctions d'appel à l'aide et d'affichage HUD : 
 		show_controls(), draw_HUD(Game *s) 
 
 		draw_HUD initial affichait uniquement l'index des voitures, je l'ai modifie pour afficher aussi la couleur des voitures (esthetique uniquement mais bien meilleur selon moi). 
 
-	Pour cela j'ai fait appel a une lookup table implementee avec switch case, elle me permet de retrouver les codes couleurs depuis n'importe quel entier d'ANSI couleur/fond. 
-	Meilleure que mon ancienne implementation du code couleur avec les define en debut de code. 
-	De plus, d'apres ce que j'ai appris cette structure n'enregistre rien en mémoire contrairement aux maps. 
+	- [✓] Pour cela j'ai fait appel a une lookup table implementee avec switch case, elle me permet de retrouver les codes couleurs depuis n'importe quel entier d'ANSI couleur/fond. 
+	- [!] Remarque : Meilleure que mon ancienne implementation du code couleur avec les define en debut de code. 
+	- [!] Remarque : De plus, d'apres ce que j'ai appris cette structure n'enregistre qu'en read-only memory contrairement aux maps. 
+	- [!] Remarque : Read-Only memory ==> extremement utile pour des applis embarquees
 
-	-- Ajout d'une fonction win_screen() qui s'affiche quand le user a gagne.
-	-- Reverification des changements render/logique. (nottament multiplication lors du zoom. Ne pas zoomer les valeurs logiques, zoomer le render uniquement :: sinon voir des erreurs memoire / segfault) car ma logique ne prend pas en compte de grandes valeurs i.e n elements au lieu d'un seul attendu itialement pour un zoom facteur n). En d'autres termes un tableau 6 ne peut pas contenir 18 valeurs. Donc uniquement lire les valeurs du tableau et les multiplier par n au rendering au lieu de generer un tableau m*n.
+- [✓] Ajout d'une fonction win_screen() qui s'affiche quand le user a gagne.
 
-	-- Ne pas oublier doxygen et commentaires {FAIT}
+
+- [!] A retenir : 
+-	Ne pas zoomer les valeurs logiques, zoomer le render uniquement :: sinon voir des erreurs memoire / segfault) 
+	i.e : 
+			n elements au lieu d'un seul attendu itialement pour un zoom facteur n.
+			En d'autres termes un tableau 6 ne peut pas contenir 18 valeurs.
+			Donc uniquement lire les valeurs du tableau et les multiplier par n au rendering au lieu de generer un tableau m*n.
+
+-	Toujours commenter + Doxygen (car oubli du code d'un jour a l'autre)
+
+-	Faire attention aux normes de compilation : (souvent contraintes de développement i.e : machines anciennes etc...)
+	Ayant oublié mon sujet j'ai codé en c99 et me suis rendu compte au final que l'usage etait destiné pour un c90. 
+	Donc demande modification de code.
+
+- Le plus important : éviter d'oublier son sujet avec les étapes d'aides :LOL:
+
+
+
+
+
+
+
+---------------------------
+	>> [ENGLISH]
+---------------------------
+Hello,
+	Welcome to the progress file of the project "traffic jam".
+	This document is structured by project steps.
+-----------------------------------------------------
+Convention used:
+- [✓] (implemented) / (validated)
+- [→] (en cours ...) / (in progress...)
+- [?] (reflexion || axes d'amelioration) / (thoughts || can be improved)
+- [!] (remarque importante) / (important observation)
+
+===================== Step 0 : (11/12/2025)
+- [✓] Verify the correct behavior of the console.h library by compiling and testing the program test.c;
+
+- [✓] Library tested, usage of echo functions, text color and background color, as well as terminal renaming and clearing. (useful for the game)
+
+- [!] Note: I did not really understand the use of stdout buffering, its activation and deactivation. 
+			Only after proper documentation did I later understand its crucial role.
+		In C, output is buffered: printf (generalizable to stdout) does not display immediately (buffer storage).
+		It is crucial for the electronics engineer I plan to become to learn these important notions, especially in time-critical technologies such as aviation, rockets, healthcare, etc.
+
+===================== Step 1 : (11/12/2025) to (11/12/2025)
+- OBJECTIVE: Display an empty game board.
+
+- [✓] FUNCTION: generategrid(gridl, gridh) — two equal integers? better use a single parameter. The grid is necessarily square, so one variable only: GRID_SIZE
+
+- [✓] test1 completed, simple grid generation using a for loop.
+- [?] Thought: would it be more judicious to directly use a 2D array for the next steps?
+
+- [✓] test2 completed, addition of a quit option (q) which resets the terminal.
+- [→] Now trying to generate the game window centered in the terminal. Currently it is left-aligned since I only used printf and a for loop.
+- [→] Now looking to use console.c functions such as allerxy() to help with this.
+
+- [✓] Eventually, I went for a struct point(x, y) it allows easier position determination, all the while respecting the usage of allerxy(). (code modification)
+
+	- The code works perfectly, the output matches my expectations.
+[✓]  - Game window (18x18) centered with the ability to quit the terminal by pressing 'q'
+	 {→} : cin 'q' without echo. {DONE}
+
+===================== Step 2 : (11/12/2025) to (11/12/2025)
+- OBJECTIVE: Display the red car inside the board.
+
+- [✓] FUNCTION: generateMainCar(Point, hv) — one point and one integer (horizontal if 0, vertical if 1)
+- [!] Observation: works, but int > char in memory usage, so directly use 'H' and 'V' as char.
+
+- [✓] FUNCTION: generateMainCar(Point, hv) — one point and one char ('H'/'V')
+- [→] Add parameters to generalize the function to all cars (i.e. color, car_id)
+
+- [✓] test1 completed: the car is displayed as red '*' inside the grid. However, '*' are not very visible. Trying to display a full rectangle instead.
+
+- [✓] test2: after initializing the displayed character as '█' and setting the text color to red, a full red rectangle is obtained. Much better visualization.
+- [→] I am seriously thinking about integrating additional variables to generalize this function to all cars.
+
+- [→] Thoughts on the next step: initialize a 2D array representing game cells, filled with car IDs.
+- [?] (uint8 array) -- librarr restrained (cannot use due to project specifications)
+- [→] Use an array of pointers later (memory manipulation) // avoid car collisions?
+- [→] Define directly a struct Vehicule {Point, size, direction}?
+
+- [!] Observation: this is where logic and rendering start to be separated.
+
+===================== Step 3 : (12/12/2025) to (17/12/2025)
+- OBJECTIVE: Move a car.
+
+- [✓] Not very complicated when done only at the display level.
+- [→] Find the internal logic to move cars (without display): arrays, pointers, etc.
+- [✓] Separate Logic and Display in the game (easier game design)
+- [!] Observation: necessary to detect collisions, otherwise cars overlap visually or even leave the grid.
+
+===================== Next steps
+
+- [!] Observation: now that I better understand how output is visualized, it is mandatory to separate game logic (arrays and pointers) from visualization (what was done so far).
+
+- [→] Now think of a better logical implementation of the game, avoiding collisions/overlaps and cars going out of bounds.
+
+===================== CODE RESTRUCTURING : (26/12/2025) to (27/12/2025)
+- I no longer have access to the guided project steps, so I proceed by intuition, implementing what I judge useful. I might forget key elements of the game — apologies.
+
+- OBJECTIVE: continue along the game development axis: logic/render separation, movement without overlap or grid exit.
+
+- [✓] LOGIC: [GRID] 2D array containing vehicule IDs as int.
+- [✓] LOGIC: [Vehicule] struct containing all vehicule data: ID, Color, Position (Point), direction, length.
+- [✓] LOGIC: [Game] struct containing all vehicules, vehicule count, current/selected vehicule ID.
+
+- [✓] Memory test:
+		sizeof(Vehicule) = 24 bytes
+			{5 integers and one char — 5*4 + 1 — but padding applies}
+		sizeof(Game) = 248 bytes
+			{10 vehicules + 2 integers — 24 * MAX_VEHICULES + 8}
+
+- [!] Observation: same behavior when moving the char to the end.
+- [!] Conclusion: padding depends on the max_bytes alignment of struct members.
+
+- [→] Possible memory allocation optimizations (embedded systems like Pi 5, etc.), but current constraints are not limiting, so moving on.
+
+===================== GRID LOGIC : (26/12/2025) to (27/12/2025)
+
+- [✓] A single function build_grid() is sufficient.
+- Proposed parameters:
+	[✓] 2D array representing the grid ([GRID_SIZE][GRID_SIZE])
+	[✓] Pointer to Game structure (Game *s) to modify original data without copying.
+
+- [!] Observation: additional variables are required to access grid points and vehicule points.
+
+- NECESSITY:
+- [→] Fill the grid
+- [→] Iterate over each vehicule (id/index)
+- [→] Iterate over each vehicule cell according to size and direction
+- [→] Iterate over grid points (2D array)
+
+- PRINCIPLE:
+- [→] Initialize grid to -1
+		(-1) means empty space
+		Non-negative values indicate a vehicule ID
+- [✓] Empty grid initialized, vehicules added.
+
+- [→] Use a pointer to vehicules to avoid accessing the full array each time.
+- [✓] Pointer correctly targets the current vehicule.
+
+- [→] Do not forget vehicule scaling. With zoom factor x3:
+		grid is 6x6 (too small visually)
+- [!] Observation: do not modify logical grid, only rendering. Print multiple chars instead of one.
+
+Revision on (03/01/2026)
+- [→] Modify terminal visualization: only rendering is scaled.
+
+- Scaling depends on vehicule direction:
+			[**]
+		becomes
+			[***][***]
+			[***][***]
+			[***][***]
+
+	- Horizontal: length scaled
+	- Vertical: height scaled
+
+- [✓] Scaling implemented
+- Distinction between (screenx, screeny) and (gridx, gridy)
+
+- [→] Associate each grid position with vehicule ID.
+- [✓] Simple double loop with gridx + dx, gridy + dy.
+
+Objective achieved.
+
+===================== RENDERING : (27/12/2025) to (28/12/2025)
+
+- [✓] draw_grid function converted to void, GRID_SIZE defined via macro.
+
+- [!] Observation: color codes correspond to ANSI (American National Standards Institute).
+- [✓] Common ANSI codes added as defines.
+
+- [✓] Implementation of draw_car(Vehicule *v)
+	- [✓] Pointer to current vehicule
+	- [✓] Position at top-left of vehicule
+	- [✓] Background color applied to each vehicule cell
+
+- [✓] test1, test2 failed due to wrong positioning.
+- [→] Use intermediate variables to avoid confusion.
+
+- [✓] test3 successful: correct visualization of 2D grid with 4 vehicules and empty spaces, colors correctly placed.
+
+- [!] The hardest part is done.
+
+- Next tests: modify grid and visualize movement.
+
+===================== vehicule MOVEMENT : (28/12/2025) to (29/12/2025)
+
+- vehicule movement phase begins. Logic is simple.
+
+- PRINCIPLE: select a vehicule and move it according to its direction.
+		Vertical/Horizontal → add {dx}, {dy} to its initial position
+		(accessed via Game structure pointer to avoid copying)
+
+- [✓] Base function:
+		void move_vehicule(Game *s, int id, int dx, int dy)
+			s->vehicules[id].x += dx;
+			s->vehicules[id].y += dy;
+		(Revision 04/01/2026: move counter added and incremented here)
+
+- [!] Observation: function allows grid exit, illegal direction movement, and vehicule overlap.
+
+- [→] Add direction constraints.
+- [→] Add grid boundary and overlap constraints.
+
+- [→] Think about a function that determines if movement is legal.
+
+- [✓] Secondary function:
+		int can_move(Game *s, int id, int dx, int dy)
+		Handles all constraints.
+
+===================== MOVEMENT AUTHORIZE CHECK : (29/12/2025) to (02/01/2026)
+
+- PRINCIPLE: use a secondary function to validate movement legality.
+
+- [✓] Function:
+		int can_move(Game *s, int id, int dx, int dy)
+
+		Only authorizes movement if valid.
+
+- [→] Movement separated into two steps:
+	- validation/check: can_move
+	- movement: move_vehicule
+
+===================== TESTS AND DEBUG : (29/12/2025) to (02/01/2026)
+
+- Functions updated to include:
+
+	- [→] Cyclic vehicule selection from 0 to n-1 (modulo)
+	- [→] Selection inputs using UpArrow and DownArrow
+	- [!] Observation: arrows are escape sequences
+				Mandatory function to read sequences
+				e.g. 27 [ A
+				     27 [ B
+
+	- [→] vehicule movement via ('h', 'j', 'k', 'l')
+	- [→] Quit with 'q'
+
+===================== WINNING : (02/01/2026) to (03/01/2026)
+
+- PRINCIPLE: victory when top-right point of red vehicule reaches the exit.
+	- [→] Call a function to check this.
+
+- [✓] Function:
+	int check_win(Game *s)
+
+		Declare pointer *red pointing to Cars[0] (red vehicule).
+
+		red->x       top-left x
+		red->length  vehicule size
+
+	- [✓] Returns 1 iff red->x + red->length == GRID_SIZE
+
+- [✓] check_win called in main to validate level.
+
+- [→] Add victory screen using console.c functions.
+
+===================== CURRENT STATE : (03/01/2026) {J-2}
+
+- As of (03/01/2026)
+
+- [✓] Functional grid
+- [✓] Rendering (UI) valid but improvable (hints, move count, valid inputs, car viewing)
+- [✓] Movement only if legal
+
+- [→] To add:
+	- [✓] Better UI (done 03/01/2026)
+	- [✓] Win condition (done 04/01/2026)
+	- [→] Level selection
+	- [✓] Code polishing (Doxygen + comments)
+
+- As of (04/01/2026)
+
+- [✓] Better UX
+
+- [✓] Separation of help display and HUD rendering:
+		show_controls(), draw_HUD(Game *s)
+
+		draw_HUD initially displayed only vehicule index; modified to also show vehicule color.
+
+	- [✓] Lookup table implemented using switch case to retrieve ANSI color codes.
+	- [!] Observation: better than previous define-based implementation.
+	- [!] Observation: stored in read-only memory, unlike maps.
+	- [!] Observation: read-only memory is extremely useful for embedded applications.
+
+- [✓] Added win_screen() displayed upon victory.
+
+- [!] Key takeaway:
+	Do not scale logical values, scale rendering only.
+	Otherwise memory errors / segfaults may occur.
+	A 6-sized array cannot contain 18 values.
+	Read logic values and multiply only during rendering.
+
+- Always comment code + use Doxygen (easy to forget code over time).
+
+- Pay attention to compilation standards (development constraints).
+	I forgot the original subject and coded in C99, then realized the target was C90.
+	Code modification required.
+
+- Most important: do not forget the project subject and guidance steps : LOL
